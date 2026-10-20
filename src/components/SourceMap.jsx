@@ -1,301 +1,343 @@
 import React, { useState } from 'react';
-import SectionHeader from '../ui/SectionHeader';
-import GlassPanel from '../ui/GlassPanel';
-import SimulatedBadge from '../ui/SimulatedBadge';
-import { MapPin, Building, ArrowUpRight, Camera, AlertCircle, ShieldAlert, History } from 'lucide-react';
-
-const SOURCES = [
-  {
-    id: 'HP-12',
-    name: 'HP-12 Borewell',
-    type: 'Deep Borewell (180m)',
-    village: 'Habitation Rampur, Ward 2',
-    pfasTier: 'HIGH – SEND TO LAB',
-    mpTier: 'HIGH MFI',
-    status: 'RED',
-    lastTest: 'Today, 14:20 IST',
-    testCount: 14,
-    labStatus: 'DISPATCHED TO NABL LAB (LC-MS/MS CONFIRMATION QUEUE)',
-    coordinates: { x: 220, y: 140 },
-    history: ['GREEN', 'GREEN', 'AMBER', 'AMBER', 'RED'],
-    photoNote: 'Macro audit photo shows high particle agglomeration ≥ 20µm'
-  },
-  {
-    id: 'OHT-03',
-    name: 'OHT-03 Village A',
-    type: 'Overhead Storage Reservoir',
-    village: 'Gram Panchayat Kalyanpur',
-    pfasTier: 'DETECTED – MONITOR',
-    mpTier: 'LOW MFI',
-    status: 'AMBER',
-    lastTest: 'Yesterday, 10:15 IST',
-    testCount: 28,
-    labStatus: 'LOCAL MONITORING (RETEST SCHEDULED IN 14 DAYS)',
-    coordinates: { x: 120, y: 220 },
-    history: ['GREEN', 'GREEN', 'AMBER', 'AMBER', 'AMBER'],
-    photoNote: 'Filter disc clean; minimal debris, low fluorescence'
-  },
-  {
-    id: 'TANK-07',
-    name: 'TANK-07 School',
-    type: 'Primary School Piped Tap',
-    village: 'Govt Upper Primary School',
-    pfasTier: 'NOT DETECTED',
-    mpTier: 'LOW MFI',
-    status: 'GREEN',
-    lastTest: '3 days ago',
-    testCount: 42,
-    labStatus: 'ROUTINE QUARTERLY RETEST',
-    coordinates: { x: 340, y: 190 },
-    history: ['GREEN', 'GREEN', 'GREEN', 'GREEN', 'GREEN'],
-    photoNote: 'Optically clear disc; 0 blobs detected over 20µm'
-  },
-  {
-    id: 'WELL-21',
-    name: 'WELL-21 Ward 4',
-    type: 'Community Open Well',
-    village: 'Bishunpur Ward 4',
-    pfasTier: 'NOT DETECTED',
-    mpTier: 'LOW MFI',
-    status: 'GREEN',
-    lastTest: '5 days ago',
-    testCount: 19,
-    labStatus: 'ROUTINE QUARTERLY RETEST',
-    coordinates: { x: 420, y: 110 },
-    history: ['GREEN', 'GREEN', 'GREEN', 'GREEN', 'GREEN'],
-    photoNote: 'Normal background scatter; MFI within baseline'
-  },
-  {
-    id: 'HP-05',
-    name: 'HP-05 Near Landfill',
-    type: 'Handpump (30m shallow)',
-    village: 'Industrial Outskirts Sector 9',
-    pfasTier: 'DETECTED – MONITOR',
-    mpTier: 'MODERATE MFI',
-    status: 'AMBER',
-    lastTest: '1 week ago',
-    testCount: 31,
-    labStatus: 'BLOCK OFFICER ALERT LOGGED (RESURVEILLANCE)',
-    coordinates: { x: 170, y: 80 },
-    history: ['AMBER', 'AMBER', 'GREEN', 'AMBER', 'AMBER'],
-    photoNote: 'Diffuse fluorescence; moderate microplastic tagging'
-  }
-];
+import { SimulatedTag } from '../ui/SimulatedTag';
 
 export default function SourceMap() {
-  const [selectedSourceId, setSelectedSourceId] = useState('HP-12');
-  const selectedSource = SOURCES.find((s) => s.id === selectedSourceId) || SOURCES[0];
+  const sources = [
+    {
+      id: 'HP-12 Borewell',
+      type: 'Deep Borewell (Agricultural boundary)',
+      location: 'Ward 3, Habitation South',
+      pfas: 'RED — High (Elevated Peak Drop)',
+      mp: 'Moderate MFI (42 particles/L eq.)',
+      lastTest: 'Today, 10:45 AM',
+      count: 24,
+      tier: 'red',
+      labStatus: 'NABL courier ticket #TN-772 dispatched for LC-MS/MS',
+      history: ['green', 'amber', 'amber', 'red'],
+      cx: 180,
+      cy: 220
+    },
+    {
+      id: 'OHT-03 Village A',
+      type: 'Overhead Storage Scheme',
+      location: 'Main Distribution Grid',
+      pfas: 'AMBER — Detected – Monitor',
+      mp: 'Low MFI (< 10 particles/L eq.)',
+      lastTest: 'Yesterday, 04:15 PM',
+      count: 48,
+      tier: 'amber',
+      labStatus: 'Monitoring in 14-day cycle; block officer notified',
+      history: ['green', 'green', 'amber', 'amber'],
+      cx: 480,
+      cy: 140
+    },
+    {
+      id: 'Tank-07 School',
+      type: 'Government Primary School Storage',
+      location: 'School Campus East',
+      pfas: 'GREEN — Not Detected',
+      mp: 'Low MFI (Below detection floor)',
+      lastTest: '3 days ago',
+      count: 16,
+      tier: 'green',
+      labStatus: 'Clear; next test scheduled in 6 months',
+      history: ['green', 'green', 'green', 'green'],
+      cx: 320,
+      cy: 290
+    },
+    {
+      id: 'Well-21 Ward 4',
+      type: 'Community Dug Well',
+      location: 'North Habitation Cluster',
+      pfas: 'GREEN — Not Detected',
+      mp: 'Low MFI (5 particles/L eq.)',
+      lastTest: '1 week ago',
+      count: 32,
+      tier: 'green',
+      labStatus: 'Clear; regular routine surveillance',
+      history: ['green', 'green', 'green', 'green'],
+      cx: 620,
+      cy: 240
+    },
+    {
+      id: 'HP-05 near Landfill',
+      type: 'Shallow Handpump',
+      location: 'Solid Waste Boundary Road',
+      pfas: 'AMBER — Detected – Monitor',
+      mp: 'Moderate MFI (68 particles/L eq.)',
+      lastTest: 'Yesterday, 11:20 AM',
+      count: 19,
+      tier: 'amber',
+      labStatus: 'Flagged for source tracking; leachate runoff check',
+      history: ['amber', 'amber', 'amber', 'amber'],
+      cx: 260,
+      cy: 100
+    }
+  ];
+
+  const [selectedSource, setSelectedSource] = useState(sources[0]);
 
   return (
-    <section id="map" className="py-28 relative tech-grid bg-[#060D1E] border-t border-slate-800/80">
-      <div className="container-max">
+    <section
+      id="source-map"
+      style={{
+        backgroundColor: 'var(--color-sky)',
+        color: 'var(--color-ink)',
+        padding: '5.5rem 1.5rem',
+        borderBottom: '2px solid var(--color-ink)'
+      }}
+    >
+      <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         
-        <SectionHeader
-          number="12"
-          category="DISTRICT SURVEILLANCE"
-          title="FROM ONE TEST TO A DISTRICT-WIDE PICTURE"
-          subtitle="Every authenticated test feeds into a dynamic district surveillance topology. Suspicious Red flagged sources immediately activate automated routing to regional NABL laboratories."
-          accent="cyan"
-        />
+        {/* Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1.5rem', marginBottom: '3.5rem' }}>
+          <div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: 'var(--color-river-teal)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem', fontWeight: 700 }}>
+              12 · Spatial Surveillance
+            </div>
+            <h2
+              style={{
+                fontFamily: 'var(--font-serif)',
+                fontSize: 'clamp(2.3rem, 4.4vw, 4rem)',
+                fontWeight: 900,
+                lineHeight: 1.15
+              }}
+            >
+              From one test to a district picture.
+            </h2>
+          </div>
+          <SimulatedTag text="Simulated monitoring data" />
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Map Grid: Left Map SVG + Right Detailed Paper Record Card */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '2.5rem', alignItems: 'start' }} className="map-grid">
           
-          {/* Futuristic Stylised Vector Map (7 Cols) */}
-          <GlassPanel variant="cyan" className="lg:col-span-7 overflow-hidden">
-            <div className="flex items-center justify-between pb-3 border-b border-cyan-500/20 mb-3">
-              <span className="font-mono text-xs font-bold text-sky-400 uppercase tracking-wider">
-                DISTRICT SURVEILLANCE TOPOLOGY · SECTOR 04
+          {/* Left: Illustrated Village / District Map (SVG) */}
+          <div
+            style={{
+              backgroundColor: '#FFFFFF',
+              borderRadius: '16px',
+              border: '3px solid var(--color-ink)',
+              padding: '1.5rem',
+              boxShadow: '6px 6px 0px var(--color-ink)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid rgba(20,33,61,0.15)', paddingBottom: '0.5rem' }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', fontWeight: 800 }}>
+                DISTRICT HYDRAULIC HABITATION MAP · BLOCK CHENGALPATTU
               </span>
-              <SimulatedBadge text="SIMULATED MONITORING DATA" />
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#666' }}>
+                Click any pin to inspect
+              </span>
             </div>
 
-            {/* Futuristic SVG Map with Pulsing Nodes & Laboratory Relay Line */}
-            <div className="relative w-full aspect-[16/11] bg-[#02050E] rounded-xl border border-slate-800 p-2 overflow-hidden flex items-center justify-center">
-              <svg viewBox="0 0 500 320" className="w-full h-full">
-                {/* Tech grid & sector boundaries */}
-                <defs>
-                  <pattern id="mapSubGrid" width="25" height="25" patternUnits="userSpaceOnUse">
-                    <line x1="0" y1="0" x2="25" y2="0" stroke="rgba(34,211,238,0.05)" strokeWidth="0.5" />
-                    <line x1="0" y1="0" x2="0" y2="25" stroke="rgba(34,211,238,0.05)" strokeWidth="0.5" />
-                  </pattern>
-                </defs>
-                <rect width="500" height="320" fill="url(#mapSubGrid)" />
+            <svg viewBox="0 0 740 420" fill="none" style={{ width: '100%', height: 'auto', display: 'block' }}>
+              {/* Agricultural fields background patches */}
+              <rect x="20" y="20" width="220" height="140" rx="8" fill="#FFF2C6" opacity="0.6" stroke="#14213D" strokeWidth="1" strokeDasharray="4 2" />
+              <rect x="420" y="30" width="280" height="150" rx="8" fill="#E7DEFA" opacity="0.5" stroke="#14213D" strokeWidth="1" strokeDasharray="4 2" />
+              <rect x="180" y="240" width="300" height="140" rx="8" fill="#FFE1D6" opacity="0.5" stroke="#14213D" strokeWidth="1" strokeDasharray="4 2" />
 
-                {/* Stylized watershed / river boundary */}
-                <path 
-                  d="M 20 80 Q 150 160, 260 130 T 480 220" 
-                  stroke="rgba(34, 211, 238, 0.15)" 
-                  strokeWidth="8" 
-                  fill="none" 
-                  strokeLinecap="round" 
-                />
-                <text x="350" y="240" fill="#0e7490" fontSize="8" fontFamily="JetBrains Mono">RIVER BASIN DRAINAGE</text>
+              {/* Village Meandering River (Teal) */}
+              <path
+                d="M-20 180 C 120 190 180 80 340 110 C 500 140 560 60 760 80"
+                stroke="#0E9AA7"
+                strokeWidth="24"
+                strokeLinecap="round"
+                fill="none"
+                opacity="0.85"
+              />
+              <path
+                d="M-20 180 C 120 190 180 80 340 110 C 500 140 560 60 760 80"
+                stroke="#FFFFFF"
+                strokeWidth="2"
+                strokeDasharray="8 6"
+                fill="none"
+              />
+              <text x="350" y="105" fontFamily="var(--font-hand)" fontSize="14" fill="#0E9AA7" fontWeight="bold">River Adyar Canal</text>
 
-                {/* District NABL Central Laboratory Node */}
-                <g transform="translate(420, 260)">
-                  <rect x="-45" y="-20" width="90" height="40" rx="6" fill="#1e1b4b" stroke="#818cf8" strokeWidth="1.5" />
-                  <text x="0" y="-3" fill="#c7d2fe" fontSize="8.5" fontFamily="Space Grotesk" textAnchor="middle" fontWeight="bold">NABL LAB</text>
-                  <text x="0" y="10" fill="#a5b4fc" fontSize="7" fontFamily="JetBrains Mono" textAnchor="middle">LC-MS/MS HUB</text>
-                  <circle cx="0" cy="-20" r="3" fill="#818cf8" className="animate-ping" />
-                </g>
+              {/* Village Road lines */}
+              <path d="M80 400 L 260 20 L 680 380" stroke="#14213D" strokeWidth="2.5" strokeDasharray="6 4" fill="none" opacity="0.4" />
 
-                {/* Animated Relay line from RED node (HP-12) to NABL Lab */}
-                <path 
-                  d="M 220 140 C 260 200, 350 240, 420 260" 
-                  stroke="#ef4444" 
-                  strokeWidth="2" 
-                  strokeDasharray="4 4" 
-                  fill="none" 
-                />
-                <text x="290" y="195" fill="#f87171" fontSize="7.5" fontFamily="JetBrains Mono" fontWeight="bold">
-                  AUTO LAB ESCALATION ROUTE
-                </text>
+              {/* Central District NABL Laboratory Building Illustration */}
+              <g id="nabl-lab" transform="translate(560, 310)">
+                <rect x="0" y="0" width="140" height="85" rx="6" fill="#14213D" stroke="#0E9AA7" strokeWidth="2" />
+                <rect x="12" y="10" width="116" height="35" rx="3" fill="#25355A" />
+                <text x="18" y="28" fontFamily="var(--font-mono)" fontSize="9" fill="#FFC93C" fontWeight="bold">NABL DISTRICT LAB</text>
+                <text x="18" y="38" fontFamily="var(--font-mono)" fontSize="7" fill="#CDEFF2">LC-MS/MS & µ-FTIR</text>
+                <rect x="58" y="52" width="24" height="33" fill="#0E9AA7" />
+              </g>
 
-                {/* The 5 Sources on the Map */}
-                {SOURCES.map((src) => {
-                  const isSelected = selectedSourceId === src.id;
-                  const nodeColor = 
-                    src.status === 'RED' ? '#ef4444' :
-                    src.status === 'AMBER' ? '#f59e0b' : '#22c55e';
+              {/* Red Animated Trajectory Line to NABL Lab from Red Pin */}
+              <path
+                d="M180 220 C 260 360 440 370 560 350"
+                stroke="var(--color-alert-red)"
+                strokeWidth="3"
+                strokeDasharray="6 4"
+                fill="none"
+              />
+              <text x="290" y="365" fontFamily="var(--font-hand)" fontSize="13" fill="var(--color-alert-red)">
+                Automated NABL Chain-of-Custody Ticket ➔
+              </text>
 
-                  return (
-                    <g 
-                      key={src.id}
-                      onClick={() => setSelectedSourceId(src.id)}
-                      className="cursor-pointer group"
-                    >
-                      {/* Outer pulse circle */}
-                      <circle 
-                        cx={src.coordinates.x} 
-                        cy={src.coordinates.y} 
-                        r={isSelected ? 16 : 10} 
-                        fill={nodeColor} 
-                        opacity={src.status === 'RED' ? 0.35 : 0.2}
-                        className={src.status === 'RED' ? 'animate-ping' : ''}
-                      />
+              {/* Source Pins on the Map */}
+              {sources.map((src) => {
+                const isSelected = selectedSource.id === src.id;
+                const pinColor = src.tier === 'red' ? 'var(--color-alert-red)' : src.tier === 'amber' ? 'var(--color-amber)' : 'var(--color-leaf-green)';
 
-                      {/* Center Node */}
-                      <circle 
-                        cx={src.coordinates.x} 
-                        cy={src.coordinates.y} 
-                        r={isSelected ? 7 : 5} 
-                        fill={nodeColor} 
-                        stroke="#ffffff" 
-                        strokeWidth={isSelected ? 2 : 1}
-                      />
+                return (
+                  <g
+                    key={src.id}
+                    transform={`translate(${src.cx}, ${src.cy})`}
+                    onClick={() => setSelectedSource(src)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {/* Pulsing ring if selected */}
+                    {isSelected && (
+                      <circle cx="0" cy="-18" r="24" fill={pinColor} opacity="0.25" />
+                    )}
 
-                      {/* Source ID Text Tag */}
-                      <text 
-                        x={src.coordinates.x} 
-                        y={src.coordinates.y - 12} 
-                        fill={isSelected ? '#22d3ee' : '#94a3b8'} 
-                        fontSize="8.5" 
-                        fontFamily="JetBrains Mono" 
-                        textAnchor="middle" 
-                        fontWeight={isSelected ? 'bold' : 'normal'}
-                      >
-                        {src.id}
-                      </text>
-                    </g>
-                  );
-                })}
-              </svg>
+                    {/* Pin Flag Post */}
+                    <line x1="0" y1="0" x2="0" y2="-30" stroke="#14213D" strokeWidth="2.5" />
+                    <circle cx="0" cy="0" r="4" fill="#14213D" />
 
-              <div className="absolute bottom-2 left-3 right-3 flex items-center justify-between text-[10px] font-mono text-slate-400">
-                <span>CLICK SOURCE NODE TO LOAD DOSSIER</span>
-                <span className="text-rose-400 font-bold">1 LAB DISPATCH QUEUED</span>
+                    {/* Flag Shape */}
+                    <polygon
+                      points="0,-30 28,-22 0,-14"
+                      fill={pinColor}
+                      stroke="#14213D"
+                      strokeWidth="1.5"
+                    />
+
+                    {/* Pin Icon / Label Box */}
+                    <rect x="-35" y="8" width="70" height="18" rx="3" fill="#FFFFFF" stroke="#14213D" strokeWidth="1.2" />
+                    <text x="0" y="20" fontFamily="var(--font-mono)" fontSize="7" fill="#14213D" textAnchor="middle" fontWeight="bold">
+                      {src.id.split(' ')[0]}
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
+
+            {/* Map Legend */}
+            <div style={{ display: 'flex', gap: '1.25rem', marginTop: '1rem', borderTop: '1px solid rgba(20,33,61,0.1)', paddingTop: '0.75rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--color-leaf-green)' }} /> Green: Retest
+              </span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--color-amber)' }} /> Amber: 2-Wk Monitor
+              </span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--color-alert-red)' }} /> Red: Lab Dispatched
+              </span>
+            </div>
+          </div>
+
+          {/* Right: Selected Source Paper Record Card */}
+          <div
+            style={{
+              backgroundColor: 'var(--color-paper)',
+              border: '3px solid var(--color-ink)',
+              borderRadius: '16px',
+              padding: '2rem',
+              boxShadow: '6px 6px 0px var(--color-ink)',
+              position: 'relative'
+            }}
+          >
+            {/* Tape Strip */}
+            <div className="tape-strip" style={{ top: '-10px', right: '30px', transform: 'rotate(4deg)' }} />
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+              <div>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#666', textTransform: 'uppercase' }}>
+                  SOURCE RECORD CARD
+                </span>
+                <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.8rem', marginTop: '0.2rem' }}>
+                  {selectedSource.id}
+                </h3>
+                <div style={{ fontSize: '0.85rem', color: '#555' }}>
+                  {selectedSource.type} · {selectedSource.location}
+                </div>
               </div>
             </div>
-          </GlassPanel>
 
-          {/* Source Intelligence Dossier Panel (5 Cols) */}
-          <div className="lg:col-span-5 space-y-4">
-            <GlassPanel variant={selectedSource.status === 'RED' ? 'orange' : 'cyan'}>
-              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-                <span className="font-mono text-xs font-bold text-white uppercase tracking-wider">
-                  SOURCE DOSSIER // {selectedSource.id}
+            {/* Diagnostics Summary */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
+              
+              <div style={{ background: '#FFFFFF', border: '1.5px solid var(--color-ink)', borderRadius: '8px', padding: '0.85rem' }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--color-pfas-violet)', fontWeight: 800 }}>
+                  PFAS STATUS:
+                </div>
+                <div style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '0.95rem', marginTop: '0.15rem' }}>
+                  {selectedSource.pfas}
+                </div>
+              </div>
+
+              <div style={{ background: '#FFFFFF', border: '1.5px solid var(--color-ink)', borderRadius: '8px', padding: '0.85rem' }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--color-nile-coral)', fontWeight: 800 }}>
+                  MICROPLASTICS (MFI):
+                </div>
+                <div style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '0.95rem', marginTop: '0.15rem' }}>
+                  {selectedSource.mp}
+                </div>
+              </div>
+
+              <div style={{ background: '#FFFFFF', border: '1.5px solid var(--color-ink)', borderRadius: '8px', padding: '0.85rem' }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#666', fontWeight: 800 }}>
+                  AUTOMATED PUBLIC HEALTH ACTION:
+                </div>
+                <div style={{ fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: '0.9rem', color: selectedSource.tier === 'red' ? 'var(--color-alert-red)' : 'var(--color-ink)', marginTop: '0.15rem' }}>
+                  {selectedSource.labStatus}
+                </div>
+              </div>
+
+            </div>
+
+            {/* Historical Testing Dots */}
+            <div style={{ borderTop: '1px dashed rgba(20, 33, 61, 0.2)', paddingTop: '1rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#666' }}>
+                  HISTORICAL TRIAGE TREND (LAST 4 SAMPLES):
                 </span>
-                <span className={`font-mono text-xs font-bold px-2.5 py-0.5 rounded border ${
-                  selectedSource.status === 'RED' ? 'bg-rose-950 text-rose-300 border-rose-500/40' :
-                  selectedSource.status === 'AMBER' ? 'bg-amber-950 text-amber-300 border-amber-500/40' :
-                  'bg-emerald-950 text-emerald-300 border-emerald-500/40'
-                }`}>
-                  {selectedSource.status}
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', fontWeight: 700 }}>
+                  {selectedSource.count} Tests Total
                 </span>
               </div>
 
-              <div className="space-y-3 font-mono text-xs mt-3">
-                <div>
-                  <h3 className="font-heading text-lg font-bold text-white font-sans">
-                    {selectedSource.name}
-                  </h3>
-                  <div className="text-slate-400 text-xs font-sans mt-0.5">
-                    {selectedSource.village} · <span className="text-cyan-400">{selectedSource.type}</span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2 pt-1">
-                  <div className="p-2.5 rounded bg-slate-900 border border-slate-800">
-                    <div className="text-[10px] text-slate-400">LATEST PFAS TIER</div>
-                    <div className="font-bold text-white text-xs mt-0.5">{selectedSource.pfasTier}</div>
-                  </div>
-                  <div className="p-2.5 rounded bg-slate-900 border border-slate-800">
-                    <div className="text-[10px] text-slate-400">LATEST MFI TIER</div>
-                    <div className="font-bold text-white text-xs mt-0.5">{selectedSource.mpTier}</div>
-                  </div>
-                </div>
-
-                {/* Tier History Timeline Dots */}
-                <div className="p-2.5 rounded bg-slate-900 border border-slate-800">
-                  <div className="flex items-center justify-between text-[10px] text-slate-400 mb-1.5">
-                    <span>HISTORICAL TRIAGE TIMELINE (PAST 5 TESTS)</span>
-                    <History className="w-3.5 h-3.5 text-slate-500" />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {selectedSource.history.map((hTier, idx) => (
-                      <div key={idx} className="flex-1 flex flex-col items-center gap-1">
-                        <span className={`w-3 h-3 rounded-full ${
-                          hTier === 'RED' ? 'bg-rose-500 shadow-[0_0_8px_#ef4444]' :
-                          hTier === 'AMBER' ? 'bg-amber-400 shadow-[0_0_8px_#f59e0b]' :
-                          'bg-emerald-400 shadow-[0_0_8px_#22c55e]'
-                        }`} />
-                        <span className="text-[8px] text-slate-500">T{idx+1}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Regulatory Action & Lab Request Status */}
-                <div className={`p-3 rounded-lg border text-xs font-mono ${
-                  selectedSource.status === 'RED' 
-                    ? 'bg-rose-950/40 border-rose-500/50 text-rose-300' 
-                    : 'bg-cyan-950/30 border-cyan-500/30 text-cyan-200'
-                }`}>
-                  <div className="text-[10px] uppercase font-bold text-slate-400">SURVEILLANCE ACTION:</div>
-                  <div className="mt-1 font-bold">{selectedSource.labStatus}</div>
-                </div>
-
-                {/* Illustrative Audit Photo Thumbnail */}
-                <div className="p-3 rounded-lg bg-slate-950 border border-slate-800 flex items-center gap-3">
-                  <div className="w-12 h-12 rounded bg-slate-900 border border-slate-700 flex items-center justify-center shrink-0 text-cyan-400">
-                    <Camera className="w-6 h-6" />
-                  </div>
-                  <div className="text-[11px] font-sans text-slate-300">
-                    <div className="font-mono text-cyan-400 font-bold text-[10px] uppercase">
-                      Audit Image Proof (25 KB JPEG)
-                    </div>
-                    <div className="text-slate-400 text-[10px] mt-0.5">
-                      {selectedSource.photoNote}
-                    </div>
-                  </div>
-                </div>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                {selectedSource.history.map((h, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      flex: 1,
+                      height: '10px',
+                      borderRadius: '3px',
+                      backgroundColor: h === 'red' ? 'var(--color-alert-red)' : h === 'amber' ? 'var(--color-amber)' : 'var(--color-leaf-green)',
+                      border: '1px solid var(--color-ink)'
+                    }}
+                  />
+                ))}
               </div>
-            </GlassPanel>
+            </div>
+
+            <div style={{ marginTop: '1.25rem', fontSize: '0.78rem', color: '#666', fontStyle: 'italic' }}>
+              Last sampled: {selectedSource.lastTest} by Certified FTK Tester.
+            </div>
+
           </div>
 
         </div>
 
       </div>
+
+      <style>{`
+        @media (max-width: 900px) {
+          .map-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

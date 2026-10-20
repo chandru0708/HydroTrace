@@ -1,5 +1,6 @@
 import React from 'react';
-import { ArrowUp, Droplet } from 'lucide-react';
+import Sticker from '../ui/Sticker';
+import PressButton from '../ui/PressButton';
 
 export default function FinalVision() {
   const scrollToTop = () => {
@@ -7,50 +8,95 @@ export default function FinalVision() {
   };
 
   return (
-    <section className="py-24 relative tech-grid bg-gradient-to-b from-[#030713] to-[#02050E] border-t border-slate-800/80 text-center">
-      <div className="container-max">
+    <section
+      id="vision"
+      style={{
+        backgroundColor: 'var(--color-nile-coral)',
+        color: 'var(--color-ink)',
+        padding: '6rem 1.5rem',
+        borderBottom: '2px solid var(--color-ink)',
+        textAlign: 'center',
+        position: 'relative'
+      }}
+    >
+      <div style={{ maxWidth: '960px', margin: '0 auto' }}>
         
-        <div className="max-w-4xl mx-auto space-y-6">
-          
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/30 bg-cyan-950/40 text-cyan-300 font-mono text-xs">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-            <span>SIH 2026 // HARDWARE PROJECT IDENTITY</span>
-          </div>
+        {/* Badges Bar */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
+          <Sticker rotate="-2deg" color="#FFFFFF" textColor="var(--color-ink)">
+            Smart India Hackathon 2026
+          </Sticker>
+          <Sticker rotate="2deg" color="var(--color-signal-yellow)">
+            PS 26252
+          </Sticker>
+          <Sticker rotate="-1deg" color="var(--color-sky)" textColor="var(--color-ink)">
+            Ministry of Jal Shakti · NJJM · DDWS
+          </Sticker>
+        </div>
 
-          <div className="space-y-2">
-            <h2 className="font-heading text-4xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight uppercase leading-none">
-              FROM BLIND SPOTS
-              <br />
-              <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-orange-400 bg-clip-text text-transparent">
-                TO EARLY WARNINGS.
-              </span>
-            </h2>
+        {/* Huge Fraunces Headline */}
+        <h2
+          style={{
+            fontFamily: 'var(--font-serif)',
+            fontSize: 'clamp(2.8rem, 6vw, 5.2rem)',
+            fontWeight: 900,
+            lineHeight: 1.05,
+            letterSpacing: '-0.02em',
+            marginBottom: '1.5rem',
+            color: 'var(--color-ink)'
+          }}
+        >
+          From blind spots
+          <br />
+          to early warnings.
+        </h2>
 
-            <p className="font-mono text-sm sm:text-base md:text-lg text-cyan-300 tracking-widest uppercase pt-2 font-bold">
-              COLLECT. CONCENTRATE. SENSE. SIGN. ACT.
-            </p>
-          </div>
+        {/* Mono Operating Doctrine */}
+        <div
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            fontFamily: 'var(--font-mono)',
+            fontSize: 'clamp(0.85rem, 1.4vw, 1.1rem)',
+            fontWeight: 800,
+            color: 'var(--color-ink)',
+            backgroundColor: 'rgba(255, 255, 255, 0.4)',
+            border: '2px solid var(--color-ink)',
+            borderRadius: '9999px',
+            padding: '0.5rem 1.5rem',
+            marginBottom: '2rem',
+            boxShadow: '3px 3px 0px var(--color-ink)'
+          }}
+        >
+          <span>Collect</span>
+          <span>•</span>
+          <span>Concentrate</span>
+          <span>•</span>
+          <span>Sense</span>
+          <span>•</span>
+          <span>Sign</span>
+          <span>•</span>
+          <span>Act</span>
+        </div>
 
-          <p className="text-slate-300 text-sm md:text-base leading-relaxed font-sans max-w-2xl mx-auto">
-            Jal-Drishti brings PFAS and microplastic screening to the village tap, so laboratories can focus on the sources that need them most.
-          </p>
+        <p
+          style={{
+            fontSize: 'clamp(1.15rem, 1.6vw, 1.35rem)',
+            lineHeight: 1.6,
+            color: 'var(--color-ink)',
+            maxWidth: '720px',
+            margin: '0 auto 2.5rem',
+            fontWeight: 500
+          }}
+        >
+          HydroTrace brings PFAS and microplastic screening directly to the village tap, empowering frontline communities so central laboratories can focus on the sources that need them most.
+        </p>
 
-          <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 font-mono text-xs text-slate-400 space-y-1 max-w-lg mx-auto">
-            <div className="text-white font-bold">SMART INDIA HACKATHON 2026 · PS 26252</div>
-            <div className="text-cyan-400">MINISTRY OF JAL SHAKTI</div>
-            <div>NATIONAL JAL JEEVAN MISSION (NJJM) · DDWS</div>
-          </div>
-
-          <div className="pt-4">
-            <button
-              onClick={scrollToTop}
-              className="btn-primary"
-            >
-              <span>EXPLORE THE SYSTEM</span>
-              <ArrowUp className="w-4 h-4 ml-1" />
-            </button>
-          </div>
-
+        <div>
+          <PressButton onClick={scrollToTop} variant="ink" style={{ padding: '0.8rem 1.8rem', fontSize: '1rem' }}>
+            Back to the start ↑
+          </PressButton>
         </div>
 
       </div>

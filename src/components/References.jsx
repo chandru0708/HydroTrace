@@ -1,128 +1,156 @@
 import React from 'react';
-import SectionHeader from '../ui/SectionHeader';
-import GlassPanel from '../ui/GlassPanel';
-import { ExternalLink, BookOpen } from 'lucide-react';
-
-const REFERENCES = [
-  {
-    num: '01',
-    authors: 'Karimian N. et al.',
-    year: '2018',
-    title: 'Electrochemosensor for trace analysis of PFOS in water based on a molecularly imprinted poly(o-phenylenediamine) polymer',
-    journal: 'ACS Sensors, 3(4), 856–864',
-    url: 'https://doi.org/10.1021/acssensors.8b00154'
-  },
-  {
-    num: '02',
-    authors: 'Maes T. et al.',
-    year: '2017',
-    title: 'A rapid-screening approach to detect and quantify microplastics based on fluorescent tagging with Nile Red',
-    journal: 'Scientific Reports 7, 44501',
-    url: 'https://doi.org/10.1038/srep44501'
-  },
-  {
-    num: '03',
-    authors: 'Rowe A.A. et al.',
-    year: '2011',
-    title: 'CheapStat: an open-source, "do-it-yourself" potentiostat for analytical and educational applications',
-    journal: 'PLoS ONE 6(9): e23783',
-    url: 'https://doi.org/10.1371/journal.pone.0023783'
-  },
-  {
-    num: '04',
-    authors: 'US Environmental Protection Agency (EPA)',
-    year: '2019',
-    title: 'Method 533: Determination of Selected Per- and Polyfluoroalkyl Substances in Drinking Water by Isotope Dilution Anion Exchange SPE and LC/MS/MS',
-    journal: 'US EPA Document #815-B-19-020',
-    url: 'https://www.epa.gov/dwanalyticalmethods/method-533-determination-and-polyfluoroalkyl-substances-drinking-water-isotope'
-  },
-  {
-    num: '05',
-    authors: 'Central Pollution Control Board (CPCB)',
-    year: '2024',
-    title: 'Reply on behalf of CPCB in OA No 548 of 2024 (IIT Madras study on PFAS in Chennai lakes)',
-    journal: 'National Green Tribunal Principal Bench, New Delhi',
-    url: 'https://www.greentribunal.gov.in/sites/default/files/news_updates/Reply%20on%20behalf%20of%20CPCB%20in%20OA%20No%20548%20of%202024%20(NEWS%20ITEM%20TITLED%20IIT%20MADRAS%20STUDY%20REVEALS%20PRESENCE%20OF%20,FOREVER%20CHEMICALS,%20IN%20CHENNAI%20LAKES%20DRINKING%20WATER.pdf'
-  },
-  {
-    num: '06',
-    authors: 'Bureau of Indian Standards (BIS)',
-    year: '2012',
-    title: 'IS 10500:2012 Drinking Water — Specification (Second Revision)',
-    journal: 'Bureau of Indian Standards, New Delhi',
-    url: 'https://www.bis.gov.in/other/DrinWatIS10500.pdf'
-  },
-  {
-    num: '07',
-    authors: 'US Federal Register',
-    year: '2026',
-    title: 'National Primary Drinking Water Regulation: Extending Compliance Deadlines for PFOA and PFOS Maximum Contaminant Levels (4 ppt each)',
-    journal: 'US Federal Register, 20 May 2026',
-    url: 'https://www.federalregister.gov/documents/2026/05/20/2026-10086/extending-the-compliance-deadline-for-the-pfoa-and-pfos-maximum-contaminant-levels'
-  },
-  {
-    num: '08',
-    authors: 'Press Information Bureau (PIB), Ministry of Jal Shakti',
-    year: 'Feb 2025',
-    title: 'Jal Jeevan Mission Factsheet: 15.44 Crore Connections & 24.8 Lakh FTK-Trained Women',
-    journal: 'Government of India PIB Release',
-    url: 'https://static.pib.gov.in/WriteReadData/specificdocs/documents/2025/feb/doc202521494901.pdf'
-  }
-];
 
 export default function References() {
+  const references = [
+    {
+      id: 1,
+      citation: 'Karimian N. et al., "Electrochemosensor for trace analysis of PFOS in water based on a molecularly imprinted poly(o-phenylenediamine) polymer", ACS Sensors, 2018.',
+      link: 'https://doi.org/10.1021/acssensors.8b00154',
+      badge: 'MIP Analytical Precedent (0.04 nM LOD)'
+    },
+    {
+      id: 2,
+      citation: 'Maes T. et al., "A rapid-screening approach to detect and quantify microplastics based on fluorescent tagging with Nile Red", Scientific Reports 7, 44501, 2017.',
+      link: 'https://doi.org/10.1038/srep44501',
+      badge: 'Nile Red Tagging Protocol'
+    },
+    {
+      id: 3,
+      citation: 'Rowe A.A. et al., "CheapStat: an open-source, \'do-it-yourself\' potentiostat", PLoS ONE 6(9): e23783, 2011.',
+      link: 'https://doi.org/10.1371/journal.pone.0023783',
+      badge: 'Open Potentiostat Architecture'
+    },
+    {
+      id: 4,
+      citation: 'US EPA Method 533 — "Determination of PFAS in Drinking Water by Isotope Dilution Anion Exchange SPE and LC-MS/MS", 2019.',
+      link: 'https://www.epa.gov/dwanalyticalmethods/method-533-determination-and-polyfluoroalkyl-substances-drinking-water-isotope',
+      badge: 'WAX Cartridge Solid-Phase Reference'
+    },
+    {
+      id: 5,
+      citation: 'Central Pollution Control Board (CPCB) reply to National Green Tribunal, OA No. 548/2024 (IIT Madras study revealing PFAS in Chennai lakes drinking water).',
+      link: 'https://www.greentribunal.gov.in/sites/default/files/news_updates/Reply%20on%20behalf%20of%20CPCB%20in%20OA%20No%20548%20of%202024%20(NEWS%20ITEM%20TITLED%20IIT%20MADRAS%20STUDY%20REVEALS%20PRESENCE%20OF%20,FOREVER%20CHEMICALS,%20IN%20CHENNAI%20LAKES%20DRINKING%20WATER.pdf',
+      badge: 'NGT Indian Lake Surveillance OA 548/2024'
+    },
+    {
+      id: 6,
+      citation: 'Bureau of Indian Standards (BIS), "IS 10500:2012 Drinking Water — Specification", New Delhi, India.',
+      link: 'https://www.bis.gov.in/other/DrinWatIS10500.pdf',
+      badge: 'National Potable Water Standard'
+    },
+    {
+      id: 7,
+      citation: 'US EPA, "National Primary Drinking Water Regulation: Extending Compliance Deadline for PFOA and PFOS MCLs (4 ppt enforceable limit)", Federal Register, 20 May 2026.',
+      link: 'https://www.federalregister.gov/documents/2026/05/20/2026-10086/extending-the-compliance-deadline-for-the-pfoa-and-pfos-maximum-contaminant-levels',
+      badge: 'US 4 ppt Regulatory Threshold'
+    },
+    {
+      id: 8,
+      citation: 'Press Information Bureau (PIB), "Jal Jeevan Mission Factsheet: 15.44 Crore Connections & 24.8 Lakh FTK Women", Ministry of Jal Shakti, Feb 2025.',
+      link: 'https://static.pib.gov.in/WriteReadData/specificdocs/documents/2025/feb/doc202521494901.pdf',
+      badge: 'National JJM Infrastructure Baseline'
+    }
+  ];
+
   return (
-    <section id="references" className="py-28 relative tech-grid bg-[#02050E] border-t border-slate-800/80">
-      <div className="container-max">
+    <section
+      id="references"
+      style={{
+        backgroundColor: 'var(--color-paper)',
+        color: 'var(--color-ink)',
+        padding: '5.5rem 1.5rem',
+        borderBottom: '2px solid var(--color-ink)'
+      }}
+    >
+      <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
         
-        <SectionHeader
-          number="21"
-          category="ACADEMIC & STATUTORY CITATIONS"
-          title="SCIENTIFIC & STATUTORY REFERENCES"
-          subtitle="All chemistry, optical physics, circuit design, and regulatory citations supporting the Jal-Drishti engineering architecture."
-          accent="cyan"
-        />
+        {/* Header */}
+        <div style={{ marginBottom: '3rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: 'var(--color-river-teal)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem', fontWeight: 700 }}>
+            Scientific Bibliography & Statutory Sources
+          </div>
+          <h2
+            style={{
+              fontFamily: 'var(--font-serif)',
+              fontSize: 'clamp(2rem, 3.8vw, 3.4rem)',
+              fontWeight: 900,
+              lineHeight: 1.15
+            }}
+          >
+            Verified technical references.
+          </h2>
+          <p style={{ marginTop: '0.5rem', fontSize: '1rem', color: '#555' }}>
+            Every parameter, limit, and architectural decision derives from peer-reviewed literature and statutory government filings.
+          </p>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {REFERENCES.map((ref) => (
-            <GlassPanel key={ref.num} className="p-4 flex flex-col justify-between hover:border-cyan-500/30">
+        {/* Printed Bibliography List */}
+        <div style={{ display: 'flex', flexDirection: 'column', borderTop: '2.5px solid var(--color-ink)' }}>
+          {references.map((ref) => (
+            <div
+              key={ref.id}
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '40px 1fr auto',
+                gap: '1.25rem',
+                alignItems: 'baseline',
+                padding: '1.25rem 0',
+                borderBottom: '1px solid rgba(20, 33, 61, 0.2)'
+              }}
+              className="ref-row"
+            >
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-river-teal)' }}>
+                [{ref.id}]
+              </span>
+
               <div>
-                <div className="flex items-center justify-between text-xs font-mono mb-2">
-                  <span className="text-cyan-400 font-bold bg-cyan-950 px-2 py-0.5 rounded border border-cyan-500/30">
-                    REF [{ref.num}]
-                  </span>
-                  <span className="text-slate-500">{ref.year}</span>
-                </div>
-
-                <div className="font-heading font-bold text-white text-xs sm:text-sm mb-1 leading-snug">
-                  {ref.title}
-                </div>
-
-                <div className="text-[11px] font-sans text-slate-400 mb-1">
-                  {ref.authors}
-                </div>
-
-                <div className="text-[10px] font-mono text-slate-500">
-                  {ref.journal}
+                <p style={{ fontSize: '0.95rem', lineHeight: 1.55, color: '#1B2A4A' }}>
+                  {ref.citation}
+                </p>
+                <div style={{ marginTop: '0.35rem' }}>
+                  <a
+                    href={ref.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '0.78rem',
+                      color: 'var(--color-pfas-violet)',
+                      textDecoration: 'underline',
+                      wordBreak: 'break-all'
+                    }}
+                  >
+                    {ref.link}
+                  </a>
                 </div>
               </div>
 
-              <div className="mt-3 pt-2 border-t border-slate-800 flex items-center justify-end">
-                <a
-                  href={ref.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 font-mono text-[10px] text-cyan-400 hover:text-cyan-300 transition-colors"
-                >
-                  <span>SOURCE DOCUMENT</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              </div>
-            </GlassPanel>
+              <span
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.72rem',
+                  fontWeight: 700,
+                  backgroundColor: 'rgba(20, 33, 61, 0.06)',
+                  padding: '0.25rem 0.6rem',
+                  borderRadius: '4px',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                {ref.badge}
+              </span>
+            </div>
           ))}
         </div>
 
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .ref-row {
+            grid-template-columns: 30px 1fr !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

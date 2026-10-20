@@ -1,161 +1,177 @@
 import React, { useState } from 'react';
-import SectionHeader from '../ui/SectionHeader';
-import GlassPanel from '../ui/GlassPanel';
-import SimulatedBadge from '../ui/SimulatedBadge';
-import { CheckCircle2, XCircle, ShieldAlert, AlertTriangle, RefreshCw } from 'lucide-react';
-
-const VALIDITY_CHECKS = [
-  { id: 'blank', label: 'BLANK SCAN RECORDED BEFORE STAINING', rule: 'I_blank photodiode read within 5 min of filter loading', valid: true },
-  { id: 'stain', label: 'STAIN INCUBATION TIME ≥ 10 MIN', rule: 'Hardware timer enforces minimum 600 s contact time', valid: true },
-  { id: 'baseline', label: 'STRIP BASELINE CURRENT IN RANGE', rule: 'ΔI0 peak current between 0.8 µA and 15 µA in buffer', valid: true },
-  { id: 'nip', label: 'NIP REFERENCE RESPONSE IN RANGE', rule: 'Non-imprinted control electrode shows expected matrix background', valid: true },
-  { id: 'incubation', label: 'PFAS INCUBATION TIME COMPLETE', rule: 'Droplet contact on strip ≥ 300 s prior to DPV staircase', valid: true },
-  { id: 'rail', label: 'BATTERY / ANALOG RAIL STABLE', rule: 'LP2985 3.3V rail ripple < 5 mV; Battery voltage > 3.4V', valid: true },
-  { id: 'photo', label: 'AUDIT PHOTO CAPTURED', rule: 'ESP32-S3 camera registers valid JPEG ≥ 15 KB under blue illumination', valid: true },
-  { id: 'counter', label: 'COUNTER INCREMENTED + CODE SIGNED', rule: 'Monotonic eFuse counter +1; HMAC-SHA256 signature calculated', valid: true }
-];
+import { SimulatedTag } from '../ui/SimulatedTag';
 
 export default function TestValidity() {
-  const [simulateFailure, setSimulateFailure] = useState(false);
-  const [failingCheckId, setFailingCheckId] = useState('stain');
+  const [showFailure, setShowFailure] = useState(false);
+
+  const checklistItems = [
+    { id: 1, text: 'Blank scan recorded before Nile Red staining', pass: true },
+    { id: 2, text: 'Stain incubation time ≥ 10 minutes verified by RTC', pass: !showFailure, failReason: 'Staining aborted at 4:12 min — photodiode reading rejected' },
+    { id: 3, text: 'Strip baseline current in acceptable range (0.5 – 5.0 µA)', pass: true },
+    { id: 4, text: 'NIP non-imprinted reference response within noise bounds', pass: true },
+    { id: 5, text: 'PFAS incubation on MIP cavities complete (5 min)', pass: true },
+    { id: 6, text: 'LP2985 3.3V ultra-low-noise analog rail voltage stable', pass: true },
+    { id: 7, text: 'Audit macro photo captured and compressed (~25 KB JPEG)', pass: true },
+    { id: 8, text: 'Hardware 12-bit monotonic counter incremented and signed', pass: !showFailure }
+  ];
 
   return (
-    <section id="validity" className="py-28 relative tech-grid bg-[#050C1D] border-t border-slate-800/80">
-      <div className="container-max">
+    <section
+      id="test-validity"
+      style={{
+        backgroundColor: 'var(--color-lilac)',
+        color: 'var(--color-ink)',
+        padding: '5.5rem 1.5rem',
+        borderBottom: '2px solid var(--color-ink)'
+      }}
+    >
+      <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         
-        <SectionHeader
-          number="09"
-          category="HARDWARE INTEGRITY"
-          title="NOT EVERY READING IS A VALID TEST"
-          subtitle="A field instrument must guard against faulty operation. The Jal-Drishti firmware executes strict pre-flight gating checks before issuing a signed result code. If any condition fails, the result is withheld."
-          accent="cyan"
-        />
+        {/* Header */}
+        <div style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto 3.5rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: 'var(--color-pfas-violet)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem', fontWeight: 700 }}>
+            09 · Quality Assurance Architecture
+          </div>
+          <h2
+            style={{
+              fontFamily: 'var(--font-serif)',
+              fontSize: 'clamp(2.3rem, 4.4vw, 4rem)',
+              fontWeight: 900,
+              lineHeight: 1.15
+            }}
+          >
+            Not every reading becomes a result.
+          </h2>
+          <p style={{ marginTop: '0.75rem', fontSize: '1.05rem', color: '#2B2B2B' }}>
+            To prevent false alarms in remote habitations, the ESP32-S3 firmware enforces eight hardware quality gates before generating a signed code.
+          </p>
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Central Clipboard Illustration */}
+        <div style={{ maxWidth: '680px', margin: '0 auto', position: 'relative' }}>
           
-          {/* Left: Interactive Checklist (7 Cols) */}
-          <GlassPanel className="lg:col-span-7 space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-800">
-              <span className="font-mono text-xs font-bold text-sky-400 uppercase tracking-wider">
-                PRE-FLIGHT FIRMWARE INTEGRITY PROTOCOL
-              </span>
-              <SimulatedBadge text="DESIGN-LEVEL CHECKS" />
-            </div>
-
-            <div className="space-y-2.5">
-              {VALIDITY_CHECKS.map((check) => {
-                const isFailing = simulateFailure && check.id === failingCheckId;
-                return (
-                  <div
-                    key={check.id}
-                    className={`p-3 rounded-lg border flex items-start justify-between gap-3 font-mono transition-all ${
-                      isFailing 
-                        ? 'bg-rose-950/40 border-rose-500/50 text-rose-300' 
-                        : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-slate-700'
-                    }`}
-                  >
-                    <div className="flex items-start gap-3">
-                      {isFailing ? (
-                        <XCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
-                      ) : (
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                      )}
-                      <div>
-                        <div className={`text-xs font-bold ${isFailing ? 'text-rose-200' : 'text-white'}`}>
-                          {check.label}
-                        </div>
-                        <div className="text-[11px] text-slate-400 font-sans mt-0.5">
-                          {check.rule}
-                        </div>
-                      </div>
-                    </div>
-
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                      isFailing ? 'bg-rose-950 text-rose-300 border border-rose-500/40' : 'bg-emerald-950 text-emerald-300 border border-emerald-500/30'
-                    }`}>
-                      {isFailing ? 'FAILED' : 'PASS'}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Test Simulation Controls */}
-            <div className="pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
-              <span className="text-xs font-mono text-slate-400">TEST BEHAVIOR SIMULATOR:</span>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setSimulateFailure(false)}
-                  className={`px-3 py-1 text-xs font-mono rounded border font-semibold cursor-pointer ${
-                    !simulateFailure ? 'bg-emerald-950 text-emerald-300 border-emerald-500/50' : 'bg-slate-900 text-slate-400 border-slate-800'
-                  }`}
-                >
-                  ALL CHECKS PASS
-                </button>
-                <button
-                  onClick={() => {
-                    setSimulateFailure(true);
-                    setFailingCheckId('stain');
-                  }}
-                  className={`px-3 py-1 text-xs font-mono rounded border font-semibold cursor-pointer ${
-                    simulateFailure ? 'bg-rose-950 text-rose-300 border-rose-500/50' : 'bg-slate-900 text-slate-400 border-slate-800'
-                  }`}
-                >
-                  SIMULATE PREMATURE SCAN (FAIL)
-                </button>
-              </div>
-            </div>
-          </GlassPanel>
-
-          {/* Right: Firmware Gating Verdict (5 Cols) */}
-          <div className="lg:col-span-5 space-y-4">
-            <GlassPanel variant={simulateFailure ? 'orange' : 'cyan'}>
-              <span className="font-mono text-xs font-bold uppercase text-slate-400">
-                FIRMWARE VERDICT & CODE EMISSION
-              </span>
-
-              {simulateFailure ? (
-                <div className="mt-4 p-5 rounded-xl bg-rose-950/30 border border-rose-500/50 text-center space-y-3">
-                  <div className="w-12 h-12 rounded-full bg-rose-900/60 border border-rose-500/60 flex items-center justify-center mx-auto text-rose-400">
-                    <ShieldAlert className="w-6 h-6 animate-pulse" />
-                  </div>
-                  <h4 className="font-heading text-lg font-bold text-white uppercase">
-                    REPEAT TEST REQUIRED
-                  </h4>
-                  <div className="font-mono text-xs text-rose-300 bg-rose-950/60 p-2.5 rounded border border-rose-500/30">
-                    REASON: STAIN TIME &lt; 10 MIN (ONLY 3 MIN RECORDED)
-                  </div>
-                  <p className="text-xs text-slate-300 font-sans leading-relaxed">
-                    The firmware withheld the HMAC code. A flawed test cannot enter the national water ledger or create false triage records.
-                  </p>
-                </div>
-              ) : (
-                <div className="mt-4 p-5 rounded-xl bg-emerald-950/30 border border-emerald-500/50 text-center space-y-3">
-                  <div className="w-12 h-12 rounded-full bg-emerald-900/60 border border-emerald-500/60 flex items-center justify-center mx-auto text-emerald-400">
-                    <CheckCircle2 className="w-6 h-6" />
-                  </div>
-                  <h4 className="font-heading text-lg font-bold text-white uppercase">
-                    VALID TEST // CODE AUTHORIZED
-                  </h4>
-                  <div className="font-mono text-sm text-cyan-300 font-bold bg-cyan-950/60 p-2.5 rounded border border-cyan-500/40">
-                    7H4K-9M2X-8B3Q
-                  </div>
-                  <p className="text-xs text-slate-300 font-sans leading-relaxed">
-                    All 8 hardware checks passed. Counter incremented to #0417 and HMAC-SHA256 signature successfully verified.
-                  </p>
-                </div>
-              )}
-            </GlassPanel>
-
-            <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 text-xs font-mono text-slate-400 space-y-2">
-              <div className="text-white font-bold text-[11px] uppercase">Gating Defense Criteria:</div>
-              <div>• Blank Scan Missing → Incalculable background scatter</div>
-              <div>• Stain Time Too Short → Incomplete fluorophore partition</div>
-              <div>• Strip Baseline Out of Range → Expired / broken electrode</div>
-              <div>• Low Battery (&lt; 3.4V) → Potential DAC waveform sag</div>
-            </div>
+          {/* Clipboard Top Clip */}
+          <div style={{ width: '160px', height: '28px', backgroundColor: 'var(--color-ink)', borderRadius: '6px 6px 0 0', margin: '0 auto', border: '3px solid var(--color-ink)', borderBottom: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: '50px', height: '8px', backgroundColor: '#FFFFFF', borderRadius: '4px' }} />
           </div>
 
+          {/* Paper Sheet on Clipboard */}
+          <div
+            style={{
+              backgroundColor: '#FFFFFF',
+              border: '3px solid var(--color-ink)',
+              borderRadius: '14px',
+              padding: '2.5rem 2rem',
+              boxShadow: '7px 7px 0px var(--color-ink)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}
+          >
+            {/* Stamp if Failed */}
+            {showFailure && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '40%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%) rotate(-12deg)',
+                  border: '5px solid var(--color-alert-red)',
+                  color: 'var(--color-alert-red)',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 'clamp(1.6rem, 3.5vw, 2.5rem)',
+                  fontWeight: 900,
+                  padding: '0.5rem 1.5rem',
+                  borderRadius: '10px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                  boxShadow: '0 4px 15px rgba(215, 38, 61, 0.3)',
+                  letterSpacing: '0.08em',
+                  zIndex: 20,
+                  userSelect: 'none',
+                  textAlign: 'center'
+                }}
+              >
+                INVALID TEST · REPEAT
+              </div>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.75rem', borderBottom: '2px solid rgba(20, 33, 61, 0.15)', paddingBottom: '1rem' }}>
+              <div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', fontWeight: 800, color: 'var(--color-ink)' }}>
+                  HARDWARE INTEGRITY CHECKLIST
+                </div>
+                <div style={{ fontSize: '0.75rem', color: '#666' }}>
+                  Firmware Verification v1.2 · Target Habit: Ramapuram (TN-04)
+                </div>
+              </div>
+              <SimulatedTag text="Simulated demonstration" />
+            </div>
+
+            {/* Checklist Items */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {checklistItems.map((item) => (
+                <div
+                  key={item.id}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '0.85rem',
+                    padding: '0.4rem 0',
+                    borderBottom: '1px dashed rgba(20, 33, 61, 0.1)'
+                  }}
+                >
+                  <span
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      borderRadius: '4px',
+                      backgroundColor: item.pass ? 'var(--color-leaf-green)' : 'var(--color-alert-red)',
+                      color: '#FFFFFF',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '0.85rem',
+                      fontWeight: 800,
+                      flexShrink: 0
+                    }}
+                  >
+                    {item.pass ? '✓' : '✕'}
+                  </span>
+
+                  <div>
+                    <span
+                      style={{
+                        fontFamily: 'var(--font-sans)',
+                        fontSize: '0.95rem',
+                        fontWeight: item.pass ? 600 : 700,
+                        color: item.pass ? 'var(--color-ink)' : 'var(--color-alert-red)',
+                        textDecoration: !item.pass ? 'line-through' : 'none'
+                      }}
+                    >
+                      {item.text}
+                    </span>
+                    {!item.pass && item.failReason && (
+                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-alert-red)', marginTop: '0.2rem' }}>
+                        ⚠ Error: {item.failReason}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Toggle Controls */}
+            <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'center' }}>
+              <button
+                onClick={() => setShowFailure(!showFailure)}
+                className="btn-press btn-yellow"
+                style={{ padding: '0.55rem 1.2rem', fontSize: '0.85rem' }}
+              >
+                {showFailure ? '✓ Restore Passing Test' : '✕ Simulate Failed Test (Premature Timer)'}
+              </button>
+            </div>
+
+          </div>
         </div>
 
       </div>

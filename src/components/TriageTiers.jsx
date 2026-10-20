@@ -1,128 +1,170 @@
 import React from 'react';
-import SectionHeader from '../ui/SectionHeader';
-import GlassPanel from '../ui/GlassPanel';
-import { ShieldCheck, AlertTriangle, AlertOctagon, ArrowUpRight, Scale } from 'lucide-react';
-
-const TIERS = [
-  {
-    tier: 'GREEN',
-    badge: 'NOT DETECTED / LOW MFI',
-    title: 'Routine Monitoring Schedule',
-    subtitle: 'PFAS below kit limit (< tens of ppt equivalent) · Low plastic surface area index',
-    action: 'Record source in WQMIS ledger. Retain standard quarterly or seasonal sampling interval. No immediate intervention required.',
-    color: 'emerald',
-    border: 'border-emerald-500/40',
-    bg: 'bg-emerald-950/20',
-    light: 'bg-emerald-400 shadow-[0_0_15px_#22c55e]',
-    textColor: 'text-emerald-400',
-    routing: 'STAYS LOCAL // WQMIS LOGGED'
-  },
-  {
-    tier: 'AMBER',
-    badge: 'DETECTED – MONITOR',
-    title: 'Accelerated Resurveillance',
-    subtitle: 'Moderate DPV peak attenuation · Moderate Nile Red fluorescence index',
-    action: 'Source flagged for retest within 14 days. Automated notification generated to Block Water & Sanitation Officer. Source remains in targeted observation.',
-    color: 'amber',
-    border: 'border-amber-500/40',
-    bg: 'bg-amber-950/20',
-    light: 'bg-amber-400 shadow-[0_0_15px_#f59e0b]',
-    textColor: 'text-amber-400',
-    routing: 'ALERT TO BLOCK OFFICER // RESAMPLE 14 DAYS'
-  },
-  {
-    tier: 'RED',
-    badge: 'HIGH – SEND TO LAB',
-    title: 'Regulatory Laboratory Triage',
-    subtitle: 'Severe redox current blockage · High fluorescent particle density',
-    action: 'District alert dispatched immediately. Standard operating procedure initiates formal chain-of-custody collection for NABL-accredited LC-MS/MS & µ-FTIR confirmation.',
-    color: 'rose',
-    border: 'border-rose-500/50',
-    bg: 'bg-rose-950/20',
-    light: 'bg-rose-500 shadow-[0_0_12px_#ef4444] animate-pulse',
-    textColor: 'text-rose-400',
-    routing: 'SAMPLE TO NABL LABORATORY · DISTRICT ESCALATION'
-  }
-];
 
 export default function TriageTiers() {
-  return (
-    <section id="tiers" className="py-28 relative tech-grid border-t border-slate-800/80">
-      <div className="container-max">
-        
-        <SectionHeader
-          number="08"
-          category="ETHICAL TRIAGE FRAMEWORK"
-          title="NOT 'SAFE' — JUST HONEST"
-          subtitle="Because India has no statutory PFAS maximum contaminant level (MCL) yet, results represent operational triage decisions, not health or compliance guarantees. Numeric thresholds are finalized only after clinical validation."
-          accent="cyan"
-        />
+  const tiers = [
+    {
+      tier: 'GREEN',
+      heading: 'Not Detected',
+      sub: 'Low MFI & Background DPV',
+      bg: 'var(--color-leaf-green)',
+      textColor: '#FFFFFF',
+      icon: (
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+          <line x1="16" y1="2" x2="16" y2="6" />
+          <line x1="8" y1="2" x2="8" y2="6" />
+          <line x1="3" y1="10" x2="21" y2="10" />
+          <path d="m9 16 2 2 4-4" />
+        </svg>
+      ),
+      actionTitle: 'Action: Routine Retest Schedule',
+      actionDesc: 'No elevated screening signal detected. Source remains on the regular rural seasonal monitoring calendar (6-month cycle).'
+    },
+    {
+      tier: 'AMBER',
+      heading: 'Detected – Monitor',
+      sub: 'Moderate MFI or Detectable PFAS Shift',
+      bg: 'var(--color-amber)',
+      textColor: '#14213D',
+      icon: (
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+          <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+        </svg>
+      ),
+      actionTitle: 'Action: Retest in 2 Weeks & Notify Block',
+      actionDesc: 'Signal detected above baseline. Automated SMS flags the Block Development Officer and schedules a mandatory re-verification within 14 days.'
+    },
+    {
+      tier: 'RED',
+      heading: 'High – Send to Lab',
+      sub: 'Substantial DPV Drop or High MFI',
+      bg: 'var(--color-alert-red)',
+      textColor: '#FFFFFF',
+      icon: (
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M10 2v7.31M14 9.3V1.99M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0" />
+          <path d="M5.52 16h12.96" />
+        </svg>
+      ),
+      actionTitle: 'Action: Immediate NABL Lab Dispatch',
+      actionDesc: 'Suspect concentration flagged. System generates an automated Chain-of-Custody ticket; courier collects sample for gold-standard LC-MS/MS confirmation.'
+    }
+  ];
 
-        {/* The 3 Tier Blocks */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          {TIERS.map((tier, idx) => (
+  return (
+    <section
+      id="triage"
+      style={{
+        backgroundColor: 'var(--color-paper)',
+        color: 'var(--color-ink)',
+        padding: '5.5rem 1.5rem',
+        borderBottom: '2px solid var(--color-ink)'
+      }}
+    >
+      <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+        
+        {/* Header */}
+        <div style={{ textAlign: 'center', maxWidth: '820px', margin: '0 auto 4rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: 'var(--color-alert-red)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem', fontWeight: 700 }}>
+            08 · First-Tier Triage Framework
+          </div>
+          <h2
+            style={{
+              fontFamily: 'var(--font-serif)',
+              fontSize: 'clamp(2.3rem, 4.4vw, 4rem)',
+              fontWeight: 900,
+              lineHeight: 1.15
+            }}
+          >
+            We don&rsquo;t say &ldquo;safe&rdquo;. We say what to do next.
+          </h2>
+          <p style={{ marginTop: '1rem', fontSize: '1.1rem', color: '#333', lineHeight: 1.55 }}>
+            HydroTrace is an honest field triage tool, not a compliance rubber stamp. Every measurement routes water authorities to an explicit, preventative operational response.
+          </p>
+        </div>
+
+        {/* 3 Tall Poster-Style Solid-Colour Panels */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem', marginBottom: '3rem' }}>
+          {tiers.map((t) => (
             <div
-              key={idx}
-              className={`p-6 rounded-2xl border ${tier.border} ${tier.bg} backdrop-blur-md flex flex-col justify-between transition-all`}
+              key={t.tier}
+              style={{
+                backgroundColor: t.bg,
+                color: t.textColor,
+                borderRadius: '16px',
+                border: '3px solid var(--color-ink)',
+                padding: '2.5rem 2rem',
+                boxShadow: '6px 6px 0px var(--color-ink)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                minHeight: '440px'
+              }}
             >
               <div>
-                {/* Header with Traffic Light */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <span className={`w-3.5 h-3.5 rounded-full ${tier.light}`} />
-                    <span className="font-heading font-extrabold text-xl text-white tracking-wide">
-                      {tier.tier}
-                    </span>
-                  </div>
-                  <span className={`font-mono text-[10px] font-bold px-2 py-0.5 rounded border ${
-                    tier.color === 'emerald' ? 'bg-emerald-950 text-emerald-300 border-emerald-500/30' :
-                    tier.color === 'amber' ? 'bg-amber-950 text-amber-300 border-amber-500/30' :
-                    'bg-rose-950 text-rose-300 border-rose-500/30'
-                  }`}>
-                    TIER 0{idx + 1}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                  <span
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '1rem',
+                      fontWeight: 900,
+                      letterSpacing: '0.1em',
+                      backgroundColor: 'var(--color-ink)',
+                      color: '#FFFFFF',
+                      padding: '0.25rem 0.75rem',
+                      borderRadius: '4px'
+                    }}
+                  >
+                    {t.tier}
                   </span>
+                  <div style={{ opacity: 0.9 }}>{t.icon}</div>
                 </div>
 
-                <div className={`font-mono text-xs font-bold ${tier.textColor} mb-2 tracking-wide`}>
-                  {tier.badge}
-                </div>
-
-                <h3 className="font-heading text-lg font-bold text-white mb-2">
-                  {tier.title}
+                <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.2rem', lineHeight: 1.1, marginBottom: '0.5rem' }}>
+                  {t.heading}
                 </h3>
-
-                <p className="text-slate-300 text-xs font-sans mb-4 leading-relaxed">
-                  {tier.subtitle}
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', opacity: 0.85, marginBottom: '2rem' }}>
+                  {t.sub}
                 </p>
-
-                <div className="p-3 rounded-lg bg-slate-950/60 border border-slate-800 text-xs font-sans text-slate-300 leading-relaxed mb-4">
-                  <strong className="text-white block font-mono text-[11px] mb-1">FIELD ACTION:</strong>
-                  {tier.action}
-                </div>
               </div>
 
-              <div className="pt-3 border-t border-slate-800 font-mono text-[11px] flex items-center justify-between">
-                <span className={tier.textColor}>{tier.routing}</span>
-                <ArrowUpRight className="w-4 h-4 text-slate-500" />
+              {/* Action Box */}
+              <div
+                style={{
+                  backgroundColor: 'rgba(20, 33, 61, 0.12)',
+                  border: '2px solid var(--color-ink)',
+                  borderRadius: '10px',
+                  padding: '1.25rem'
+                }}
+              >
+                <div style={{ fontFamily: 'var(--font-sans)', fontWeight: 800, fontSize: '0.98rem', marginBottom: '0.35rem' }}>
+                  {t.actionTitle}
+                </div>
+                <div style={{ fontSize: '0.88rem', lineHeight: 1.5, opacity: 0.95 }}>
+                  {t.actionDesc}
+                </div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Regulatory Truth Callout */}
-        <div className="p-5 rounded-xl bg-slate-900/60 border border-slate-700/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-start gap-3">
-            <Scale className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
-            <div className="text-xs text-slate-300 font-sans leading-relaxed">
-              <span className="font-mono text-cyan-300 font-bold block uppercase tracking-wide">
-                Regulatory Baseline:
-              </span>
-              India's IS 10500:2012 currently has no PFAS limits (revision underway by BIS per CPCB in NGT OA 548/2024). Jal-Drishti focuses analytical power where it matters: prioritizing scarce NABL LC-MS/MS machine-time exclusively on suspicious sources.
-            </div>
-          </div>
-          <div className="font-mono text-[11px] text-slate-400 shrink-0">
-            Source: CPCB / NGT OA 548/2024
-          </div>
+        {/* Scientific Footnote */}
+        <div
+          style={{
+            textAlign: 'center',
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.82rem',
+            color: 'var(--color-ink)',
+            backgroundColor: 'rgba(20, 33, 61, 0.05)',
+            border: '1.5px dashed rgba(20, 33, 61, 0.3)',
+            borderRadius: '8px',
+            padding: '1rem 1.5rem',
+            maxWidth: '920px',
+            margin: '0 auto'
+          }}
+        >
+          * India currently has no statutory PFAS maximum contaminant level under IS 10500:2012. These triage tiers represent operational screening bands, not regulatory compliance verdicts. Exact numerical cut-offs are locked only following formal NABL co-validation studies.
         </div>
 
       </div>

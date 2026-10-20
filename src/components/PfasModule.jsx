@@ -1,440 +1,349 @@
 import React, { useState } from 'react';
-import SectionHeader from '../ui/SectionHeader';
-import GlassPanel from '../ui/GlassPanel';
-import TelemetryChip from '../ui/TelemetryChip';
-import SimulatedBadge from '../ui/SimulatedBadge';
-import { AlertTriangle, ArrowDown } from 'lucide-react';
+import SensorStrip from '../illustrations/SensorStrip';
+import { SimulatedTag, SourceCaption } from '../ui/SimulatedTag';
 
 export default function PfasModule() {
-  const [selectedBlock, setSelectedBlock] = useState('mcp6004');
-  const [pfasConcentration, setPfasConcentration] = useState('moderate'); // 'low', 'moderate', 'high'
+  const [selectedCircuitBlock, setSelectedCircuitBlock] = useState('tia');
 
-  const blockDetails = {
-    mcp6004: {
-      name: 'MCP6004 Quad Op-Amp',
-      cost: '₹45',
-      desc: 'Generates ultra-stable 1.65 V virtual ground rail, reference buffer, control amp, and transimpedance amplifier (TIA) with Rf = 10 kΩ, Cf = 100 pF.'
+  const circuitBlocks = {
+    vg: {
+      name: 'MCP6004 Virtual Ground',
+      spec: '1.65 V low-noise reference rail',
+      role: 'Establishes an analog mid-rail reference for single-supply 3.3V battery operation without split power supplies.'
     },
-    mcp4725: {
-      name: 'MCP4725 12-Bit DAC',
-      cost: '₹75',
-      desc: 'Generates precision Differential Pulse Voltammetry (DPV) staircases: 5 mV steps with superimposed 50 mV pulses over –0.1 V to +0.5 V potential range.'
+    dac: {
+      name: 'MCP4725 12-bit DAC',
+      spec: '0.8 mV potential step resolution',
+      role: 'Generates the precision Differential Pulse Voltammetry (DPV) staircase ramp (–0.1 V to +0.5 V, 5 mV step, 50 mV pulse).'
     },
-    ads1115: {
-      name: 'ADS1115 16-Bit ADC',
-      cost: '₹120',
-      desc: 'Precision analog-to-digital converter configured at ±2.048 V range, achieving ~6 nA per LSB resolution to quantify sub-microamp redox peak drops.'
+    control: {
+      name: 'Control Amplifier (MCP6004)',
+      spec: 'Maintains potential between WE and Ref',
+      role: 'Enforces cell voltage against the Ag/AgCl reference electrode by adjusting current through the carbon counter electrode.'
     },
-    cd4053: {
-      name: 'CD4053 Analog Multiplexer',
-      cost: '₹30',
-      desc: 'Switches the working electrode measurement between WE1 (MIP) and WE2 (NIP) during the 60 s DPV scans with sub-ohm channel balance.'
+    switch: {
+      name: 'CD4053 Analog Switch',
+      spec: 'Low-leakage MIP / NIP multiplexer',
+      role: 'Switches the transimpedance amp between WE1 (MIP) and WE2 (NIP) for sequential 60-second DPV scans in the exact same droplet.'
     },
-    lp2985: {
-      name: 'LP2985 Low-Noise LDO',
-      cost: '₹50',
-      desc: 'Dedicated 3.3 V ultra-low-noise analog power rail isolating the electrochemical front-end from ESP32-S3 Wi-Fi switching transients.'
+    tia: {
+      name: 'Transimpedance Amp (TIA)',
+      spec: 'Feedback resistor Rf = 10 kΩ, Cf = 100 pF',
+      role: 'Converts nanoampere-scale redox oxidation currents into measurable output voltages with high stability and RF suppression.'
+    },
+    adc: {
+      name: 'ADS1115 16-bit ADC',
+      spec: '±2.048 V range, ~6 nA/step resolution',
+      role: 'Digitizes the analog current response during the 50 ms DPV pulse window with ultra-low noise.'
+    },
+    mcu: {
+      name: 'ESP32-S3 Microcontroller',
+      spec: 'Dual-core Xtensa 240 MHz',
+      role: 'Executes matrix subtraction algorithm, calculates S_net, manages cryptographic HMAC-SHA256 signing and OLED/SMS output.'
     }
   };
 
   return (
-    <section id="pfas" className="py-28 relative tech-grid bg-[#060A18] border-t border-slate-800/80">
-      <div className="container-max">
+    <section
+      id="pfas"
+      style={{
+        backgroundColor: 'var(--color-pfas-violet)',
+        color: 'var(--color-paper)',
+        padding: '5.5rem 1.5rem',
+        borderBottom: '2px solid var(--color-ink)'
+      }}
+    >
+      <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         
-        <SectionHeader
-          number="04"
-          category="PFAS ELECTROCHEMICAL ENGINE"
-          title="DETECTING PARTS-PER-TRILLION IN THE FIELD"
-          subtitle="PFAS is too dilute to sense directly at drinking-water thresholds, so Jal-Drishti concentrates it 40–60× on a WAX cartridge first, then reads differential current blocking on a custom MIP/NIP strip."
-          accent="violet"
-        />
-
-        {/* Telemetry bar specific to PFAS */}
-        <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 mb-10 font-mono text-xs">
-          <div className="flex items-center gap-3">
-            <span className="text-purple-300 font-bold uppercase tracking-wide">ELECTROCHEM · DPV</span>
-            <span className="text-slate-600">|</span>
-            <TelemetryChip label="SCAN" status="–0.1V → +0.5V" variant="violet" />
-            <TelemetryChip label="PULSE" status="50mV · 50ms" variant="cyan" />
-            <TelemetryChip label="WE1/WE2" status="MIP vs NIP" variant="violet" />
+        {/* Header */}
+        <div style={{ maxWidth: '780px', marginBottom: '4rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: 'var(--color-signal-yellow)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem', fontWeight: 700 }}>
+            04 · Electrochemical Diagnostics
           </div>
-          <SimulatedBadge text="SIMULATED CALIBRATION CURVES" />
+          <h2
+            style={{
+              fontFamily: 'var(--font-serif)',
+              fontSize: 'clamp(2.3rem, 4.4vw, 4rem)',
+              fontWeight: 900,
+              lineHeight: 1.1,
+              marginBottom: '1rem'
+            }}
+          >
+            Catching parts-per-trillion in the field.
+          </h2>
+          <p style={{ fontSize: 'clamp(1.1rem, 1.3vw, 1.25rem)', color: '#E7DEFA', lineHeight: 1.55 }}>
+            PFAS &ldquo;forever chemicals&rdquo; exist in drinking water at parts-per-trillion levels—far too dilute for direct electrochemical detection. Our kit first concentrates the sample 40–60×, then measures target molecules using blocked electron transfer.
+          </p>
+          <SourceCaption
+            source="Karimian et al., ACS Sensors (2018) reported 0.04 nM LOD using molecularly imprinted poly(o-phenylenediamine)."
+            className="text-lilac"
+          />
         </div>
 
-        {/* Grid: Pre-concentration Funnel + MIP/NIP Strip */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-10">
+        {/* 4 Alternating Lab-Bench Stops */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4rem' }}>
           
-          {/* Part A: Pre-concentration Funnel (5 Cols) */}
-          <GlassPanel variant="violet" className="lg:col-span-5 flex flex-col justify-between">
+          {/* Stop A: Pre-concentration Funnel */}
+          <div
+            style={{
+              backgroundColor: '#FFFFFF',
+              color: 'var(--color-ink)',
+              borderRadius: '16px',
+              border: '3px solid var(--color-ink)',
+              padding: '2rem',
+              boxShadow: '6px 6px 0px var(--color-ink)',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gap: '2.5rem',
+              alignItems: 'center'
+            }}
+          >
             <div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="font-mono text-xs font-bold text-purple-300 px-2.5 py-1 rounded bg-purple-950/60 border border-purple-500/30">
-                  PART A · PRE-CONCENTRATION
-                </span>
-                <span className="font-mono text-[11px] text-slate-400">EPA METHOD 533 PRINCIPLE</span>
-              </div>
-
-              <h3 className="font-heading text-lg font-bold text-white mb-2">
-                SOLID-PHASE EXTRACTION FUNNEL
-              </h3>
-
-              <p className="text-slate-300 text-xs leading-relaxed font-sans mb-4">
-                Raw tap or borewell water contains sub-ppb PFAS. A 250 mL volume is pushed through a hand-packed weak anion exchange (WAX) cartridge. Bound PFAS is eluted in 0.5 mL ammoniated methanol and diluted into 2.5 mL buffer.
-              </p>
-
-              {/* Graphic Representation of Funnel */}
-              <div className="p-4 rounded-xl bg-[#030612] border border-purple-500/20 space-y-3 font-mono">
-                <div className="flex items-center justify-between p-2 rounded bg-slate-900/80 border border-slate-800 text-xs">
-                  <span className="text-cyan-400 font-bold">250 mL RAW SAMPLE</span>
-                  <span className="text-slate-400">Large Volume Feed</span>
-                </div>
-
-                <div className="flex justify-center text-purple-400">
-                  <ArrowDown className="w-4 h-4 animate-bounce" />
-                </div>
-
-                <div className="p-2.5 rounded bg-purple-950/40 border border-purple-500/40 text-center">
-                  <div className="text-xs font-bold text-purple-300">WAX CARTRIDGE (ANIONIC TRAP)</div>
-                  <div className="text-[10px] text-slate-400 mt-0.5">Captures Perfluoroalkyl Carboxylates & Sulfonates</div>
-                </div>
-
-                <div className="flex justify-center text-purple-400">
-                  <ArrowDown className="w-4 h-4 animate-bounce" />
-                </div>
-
-                <div className="flex items-center justify-between p-2 rounded bg-slate-900/80 border border-slate-800 text-xs">
-                  <span className="text-purple-300 font-bold">0.5 mL AMMONIATED ELUATE</span>
-                  <span className="text-slate-400">Diluted 1:4 to ~2.5 mL Buffer</span>
-                </div>
-
-                {/* Animated Enrichment Readout */}
-                <div className="mt-4 p-3 rounded-lg bg-gradient-to-r from-purple-950/60 to-slate-900 border border-purple-500/30 flex items-center justify-between">
-                  <div>
-                    <div className="text-[10px] text-slate-400 uppercase">Effective Enrichment</div>
-                    <div className="font-heading text-2xl font-extrabold text-white mt-0.5">
-                      40–60× <span className="text-xs font-mono text-purple-300 font-normal">RECOVERY</span>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-[10px] text-slate-400 uppercase">Theoretical Limit</div>
-                    <div className="font-mono text-sm text-slate-300">100× (0.5 mL / 500)</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-4 pt-3 border-t border-purple-500/20 text-[11px] font-mono text-purple-300">
-              Single-use cartridge prevents carry-over. WAX is standard chemistry under EPA Method 533.
-            </div>
-          </GlassPanel>
-
-          {/* Part B: The MIP / NIP Strip Diagram (7 Cols) */}
-          <GlassPanel variant="violet" className="lg:col-span-7 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="font-mono text-xs font-bold text-purple-300 px-2 py-0.5 rounded bg-purple-950 border border-purple-500/30">
-                  PART B // SCREEN-PRINTED CARBON STRIP
-                </span>
-                <span className="font-mono text-[10px] text-slate-400">IN-HOUSE FABRICATION (₹30–50)</span>
-              </div>
-
-              <h3 className="font-heading text-lg font-bold text-white mb-2">
-                FOUR-ELECTRODE TRANSDUCER ARCHITECTURE
-              </h3>
-
-              <p className="text-slate-300 text-xs leading-relaxed font-sans mb-4">
-                Electropolymerised o-phenylenediamine (o-PD) on screen-printed carbon. WE1 contains imprinted nanocavities for PFOA/PFOS. When PFAS docks, it blocks electron transfer from the 5 mM ferri/ferrocyanide redox probe, dropping the DPV peak.
-              </p>
-
-              {/* Detailed SVG Sensor Strip */}
-              <div className="relative w-full aspect-[16/8] bg-[#02050E] rounded-xl border border-slate-800 p-3 overflow-hidden flex items-center justify-center">
-                <svg viewBox="0 0 500 220" className="w-full h-full" fill="none">
-                  {/* Ceramic / PET Substrate */}
-                  <rect x="20" y="30" width="460" height="160" rx="10" fill="#0A1424" stroke="#334155" strokeWidth="2" />
-                  
-                  {/* Connector Pins (Left) */}
-                  <rect x="25" y="50" width="30" height="20" rx="2" fill="#94a3b8" />
-                  <rect x="25" y="80" width="30" height="20" rx="2" fill="#94a3b8" />
-                  <rect x="25" y="110" width="30" height="20" rx="2" fill="#94a3b8" />
-                  <rect x="25" y="140" width="30" height="20" rx="2" fill="#94a3b8" />
-                  <text x="35" y="44" fill="#64748b" fontSize="8" fontFamily="JetBrains Mono">EDGE PINS</text>
-
-                  {/* Carbon Tracks */}
-                  <path d="M55 60 L240 60" stroke="#475569" strokeWidth="3" />
-                  <path d="M55 90 L240 90" stroke="#475569" strokeWidth="3" />
-                  <path d="M55 120 L240 120" stroke="#475569" strokeWidth="3" />
-                  <path d="M55 150 L240 150" stroke="#475569" strokeWidth="3" />
-
-                  {/* Reaction Well Insulator Mask */}
-                  <circle cx="340" cy="110" r="70" fill="#030816" stroke="#1e293b" strokeWidth="2" />
-                  <text x="340" y="32" fill="#64748b" fontSize="8" fontFamily="JetBrains Mono" textAnchor="middle">REACTION WELL (DROPLET ZONE)</text>
-
-                  {/* Counter Electrode (Carbon Arch) */}
-                  <path d="M 285 80 A 60 60 0 0 1 395 80" stroke="#94a3b8" strokeWidth="5" fill="none" strokeLinecap="round" />
-                  <text x="340" y="68" fill="#cbd5e1" fontSize="8" fontFamily="JetBrains Mono" textAnchor="middle" fontWeight="bold">COUNTER (CARBON)</text>
-
-                  {/* Reference Electrode (Ag/AgCl Pseudo) */}
-                  <path d="M 285 140 A 60 60 0 0 0 395 140" stroke="#38bdf8" strokeWidth="4" fill="none" strokeLinecap="round" />
-                  <text x="340" y="160" fill="#38bdf8" fontSize="8" fontFamily="JetBrains Mono" textAnchor="middle" fontWeight="bold">REF (Ag/AgCl)</text>
-
-                  {/* WE1: MIP Electrode Disc */}
-                  <circle cx="315" cy="110" r="16" fill="#3b0764" stroke="#a855f7" strokeWidth="2" />
-                  <text x="315" y="107" fill="#ffffff" fontSize="7.5" fontFamily="JetBrains Mono" textAnchor="middle" fontWeight="bold">WE1</text>
-                  <text x="315" y="117" fill="#e9d5ff" fontSize="6.5" fontFamily="JetBrains Mono" textAnchor="middle">MIP</text>
-
-                  {/* WE2: NIP Electrode Disc */}
-                  <circle cx="365" cy="110" r="16" fill="#1e293b" stroke="#64748b" strokeWidth="2" />
-                  <text x="365" y="107" fill="#ffffff" fontSize="7.5" fontFamily="JetBrains Mono" textAnchor="middle" fontWeight="bold">WE2</text>
-                  <text x="365" y="117" fill="#94a3b8" fontSize="6.5" fontFamily="JetBrains Mono" textAnchor="middle">NIP</text>
-
-                  {/* Docking Callout */}
-                  <rect x="420" y="80" width="70" height="60" rx="4" fill="#0f172a" stroke="#8b5cf6" />
-                  <text x="455" y="95" fill="#c084fc" fontSize="7" fontFamily="JetBrains Mono" textAnchor="middle" fontWeight="bold">MIP CAVITY</text>
-                  <circle cx="455" cy="115" r="8" fill="#2e1065" stroke="#a855f7" strokeDasharray="2 1" />
-                  <text x="455" y="118" fill="#e9d5ff" fontSize="6" fontFamily="JetBrains Mono" textAnchor="middle">PFAS</text>
-                  <text x="455" y="132" fill="#f43f5e" fontSize="6" fontFamily="JetBrains Mono" textAnchor="middle">BLOCKS e⁻</text>
-                </svg>
-              </div>
-            </div>
-
-            <div className="mt-4 pt-3 border-t border-purple-500/20 flex flex-wrap items-center justify-between text-[11px] font-mono text-slate-400">
-              <span>Template: PFOA & PFOS</span>
-              <span className="text-purple-300">Redox Probe: 5 mM [Fe(CN)6]³⁻/⁴⁻</span>
-            </div>
-          </GlassPanel>
-
-        </div>
-
-        {/* Part C: DIY Potentiostat Block Diagram (Clickable) */}
-        <GlassPanel className="mb-8">
-          <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
-            <div>
-              <span className="font-mono text-xs font-bold text-cyan-400 px-2 py-0.5 rounded bg-cyan-950 border border-cyan-500/30">
-                PART C // HARDWARE CIRCUITRY
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', background: 'var(--color-pfas-violet)', color: '#FFFFFF', padding: '0.2rem 0.6rem', borderRadius: '4px', fontWeight: 700 }}>
+                STOP A · WAX PRE-CONCENTRATION
               </span>
-              <h3 className="font-heading text-lg font-bold text-white mt-1">
-                DIY POTENTIOSTAT (<span className="text-cyan-300">≈ ₹320 IN PARTS</span>)
+              <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.85rem', marginTop: '0.75rem', marginBottom: '0.75rem' }}>
+                250 mL compressed into 0.5 mL.
               </h3>
-            </div>
-            <div className="text-xs font-mono text-slate-400">
-              Click any stage to inspect circuit role & component cost
-            </div>
-          </div>
-
-          {/* Interactive Block Diagram Flow */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-4">
-            {[
-              { id: 'mcp6004', label: 'VIRTUAL GROUND', sub: 'MCP6004 · 1.65V Rail' },
-              { id: 'mcp4725', label: 'DAC EXCITATION', sub: 'MCP4725 · 0.8mV Step' },
-              { id: 'cd4053', label: 'MIP/NIP SWITCH', sub: 'CD4053 Multiplexer' },
-              { id: 'ads1115', label: '16-BIT ADC TIA', sub: 'ADS1115 · ~6nA/Step' },
-              { id: 'lp2985', label: 'ANALOG RAIL', sub: 'LP2985 Ultra-Low Noise' }
-            ].map((block) => (
-              <button
-                key={block.id}
-                onClick={() => setSelectedBlock(block.id)}
-                className={`p-3 rounded-lg border text-left font-mono transition-all cursor-pointer ${
-                  selectedBlock === block.id
-                    ? 'bg-purple-950/60 border-purple-400 shadow-[0_0_15px_rgba(139,92,246,0.3)]'
-                    : 'bg-slate-900/60 border-slate-800 hover:border-slate-700'
-                }`}
-              >
-                <div className="text-[10px] text-slate-400 uppercase">{block.label}</div>
-                <div className={`text-xs font-bold mt-1 ${selectedBlock === block.id ? 'text-purple-300' : 'text-white'}`}>
-                  {block.sub}
+              <p style={{ fontSize: '1rem', lineHeight: 1.6, color: '#333', marginBottom: '1.25rem' }}>
+                250 mL of raw sample is manually driven through a disposable Weak Anion Exchange (WAX) cartridge. Perfluoroalkyl carboxylates and sulfonates bind strongly to the protonated amino phase. The cartridge is eluted with 0.5 mL ammoniated methanol and diluted 1:4 into 2.5 mL pH-stabilised buffer.
+              </p>
+              
+              <div style={{ background: 'var(--color-lilac)', border: '2px solid var(--color-pfas-violet)', borderRadius: '8px', padding: '1rem' }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.1rem', fontWeight: 800, color: 'var(--color-pfas-violet)' }}>
+                  100× theoretical ➔ 40–60× field recovery
                 </div>
-              </button>
-            ))}
-          </div>
-
-          {/* Selected Component Details Box */}
-          <div className="p-4 rounded-lg bg-slate-950/80 border border-purple-500/30 flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
-            <div>
-              <div className="text-purple-300 font-bold text-sm">
-                {blockDetails[selectedBlock].name} ({blockDetails[selectedBlock].cost})
-              </div>
-              <div className="text-slate-300 mt-1 font-sans text-xs max-w-3xl leading-relaxed">
-                {blockDetails[selectedBlock].desc}
+                <div style={{ fontSize: '0.82rem', color: '#444', marginTop: '0.25rem' }}>
+                  Single-use WAX cartridge utilizes the identical retention chemistry codified in US EPA Method 533.
+                </div>
               </div>
             </div>
-            <div className="px-3 py-1.5 rounded bg-purple-950 border border-purple-500/40 text-purple-200 text-xs">
-              TOTAL ANALOG BOM: ₹320
+
+            {/* Visual Funnel Graphic */}
+            <div style={{ background: 'var(--color-paper)', border: '2px dashed var(--color-ink)', borderRadius: '12px', padding: '1.5rem', textAlign: 'center' }}>
+              <svg viewBox="0 0 300 200" fill="none" style={{ width: '100%', height: 'auto', display: 'block' }}>
+                <polygon points="40,20 260,20 180,110 180,160 120,160 120,110" fill="#CDEFF2" stroke="#14213D" strokeWidth="2.5" />
+                <rect x="110" y="100" width="80" height="25" rx="3" fill="#6C4AB6" stroke="#14213D" strokeWidth="2" />
+                <text x="122" y="117" fontFamily="var(--font-mono)" fontSize="9" fill="#FFFFFF" fontWeight="bold">WAX RESIN</text>
+                <text x="75" y="45" fontFamily="var(--font-mono)" fontSize="11" fill="#14213D" fontWeight="bold">250 mL Raw Sample</text>
+                
+                {/* Drops falling into vial */}
+                <path d="M150 162 L150 178" stroke="#6C4AB6" strokeWidth="3" strokeDasharray="3 2" />
+                <rect x="135" y="178" width="30" height="20" rx="3" fill="#E7DEFA" stroke="#14213D" strokeWidth="1.5" />
+                <text x="140" y="192" fontFamily="var(--font-mono)" fontSize="8" fill="#6C4AB6" fontWeight="bold">0.5 mL</text>
+              </svg>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--color-ink)', marginTop: '0.5rem', fontWeight: 700 }}>
+                Concentration Factor: 40× to 60×
+              </div>
             </div>
           </div>
-        </GlassPanel>
 
-        {/* Part D: DPV Voltammogram & Part E: Matrix Correction */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
-          {/* Part D: Animated DPV Voltammogram Chart (7 Cols) */}
-          <GlassPanel variant="violet" className="lg:col-span-7">
-            <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-              <div>
-                <span className="font-mono text-xs font-bold text-purple-300 px-2 py-0.5 rounded bg-purple-950 border border-purple-500/30">
-                  PART D // DPV WAVEFORM
-                </span>
-                <h4 className="font-heading text-base font-bold text-white mt-1">
-                  DIFFERENTIAL PULSE VOLTAMMOGRAM
-                </h4>
-              </div>
+          {/* Stop B: The Sensor Strip & Molecular Imprinting */}
+          <div
+            style={{
+              backgroundColor: '#FFFFFF',
+              color: 'var(--color-ink)',
+              borderRadius: '16px',
+              border: '3px solid var(--color-ink)',
+              padding: '2rem',
+              boxShadow: '6px 6px 0px var(--color-ink)'
+            }}
+          >
+            <div style={{ marginBottom: '1.5rem' }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', background: 'var(--color-pfas-violet)', color: '#FFFFFF', padding: '0.2rem 0.6rem', borderRadius: '4px', fontWeight: 700 }}>
+                STOP B · DUAL WORKING ELECTRODES
+              </span>
+              <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.85rem', marginTop: '0.75rem', marginBottom: '0.5rem' }}>
+                The MIP / NIP screen-printed carbon strip.
+              </h3>
+              <p style={{ fontSize: '1rem', color: '#333', maxWidth: '800px', lineHeight: 1.55 }}>
+                Manufactured via thick-film screen printing. The MIP electrode features an electropolymerized o-phenylenediamine film grown in the presence of PFOA/PFOS templates. When washed, target cavities remain. When PFAS redocks, it sterically impedes the [Fe(CN)₆]³⁻/⁴⁻ redox probe, causing the voltammetric peak current to drop.
+              </p>
+            </div>
 
-              {/* PFAS concentration toggle */}
-              <div className="flex items-center gap-1 font-mono text-xs">
-                <span className="text-slate-400 text-[10px] mr-1">SPIKE:</span>
-                {(['low', 'moderate', 'high']).map((lvl) => (
+            <SensorStrip />
+          </div>
+
+          {/* Stop C: The ₹320 DIY Potentiostat */}
+          <div
+            style={{
+              backgroundColor: 'var(--color-lilac)',
+              color: 'var(--color-ink)',
+              borderRadius: '16px',
+              border: '3px solid var(--color-ink)',
+              padding: '2rem',
+              boxShadow: '6px 6px 0px var(--color-ink)'
+            }}
+          >
+            <div style={{ marginBottom: '1.5rem' }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', background: 'var(--color-ink)', color: 'var(--color-paper)', padding: '0.2rem 0.6rem', borderRadius: '4px', fontWeight: 700 }}>
+                STOP C · CIRCUIT ARCHITECTURE (≈ ₹320 IN PARTS)
+              </span>
+              <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.85rem', marginTop: '0.75rem', marginBottom: '0.5rem' }}>
+                Laboratory potentiostat on a field budget.
+              </h3>
+              <p style={{ fontSize: '1rem', color: '#222', maxWidth: '850px', lineHeight: 1.55 }}>
+                Instead of a ₹5,00,000 benchtop potentiostat or costly proprietary chips, HydroTrace uses four standard precision jellybean ICs: MCP6004 quad op-amp, MCP4725 12-bit DAC, ADS1115 16-bit ADC, and CD4053 analog switch. Click any block to view its circuit role:
+              </p>
+            </div>
+
+            {/* Interactive Circuit Block Diagram on Graph Paper */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(135px, 1fr))', gap: '0.75rem', marginBottom: '1.5rem' }}>
+              {Object.entries(circuitBlocks).map(([key, block]) => {
+                const isSelected = selectedCircuitBlock === key;
+                return (
                   <button
-                    key={lvl}
-                    onClick={() => setPfasConcentration(lvl)}
-                    className={`px-2 py-0.5 rounded uppercase text-[10px] font-semibold border ${
-                      pfasConcentration === lvl
-                        ? 'bg-purple-900 text-purple-200 border-purple-400'
-                        : 'bg-slate-900 text-slate-400 border-slate-800'
-                    }`}
+                    key={key}
+                    onClick={() => setSelectedCircuitBlock(key)}
+                    style={{
+                      backgroundColor: isSelected ? 'var(--color-signal-yellow)' : '#FFFFFF',
+                      border: isSelected ? '2.5px solid var(--color-ink)' : '1.5px solid rgba(20, 33, 61, 0.4)',
+                      borderRadius: '8px',
+                      padding: '0.75rem 0.5rem',
+                      cursor: 'pointer',
+                      textAlign: 'center',
+                      boxShadow: isSelected ? '3px 3px 0px var(--color-ink)' : '1px 1px 0px rgba(20, 33, 61, 0.1)',
+                      transform: isSelected ? 'translateY(-2px)' : 'none',
+                      transition: 'all 0.1s ease'
+                    }}
                   >
-                    {lvl}
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', fontWeight: 800, color: 'var(--color-ink)' }}>
+                      {block.name.split(' ')[0]}
+                    </div>
+                    <div style={{ fontSize: '0.68rem', color: '#444', marginTop: '0.2rem' }}>
+                      {block.name.split(' ').slice(1).join(' ')}
+                    </div>
                   </button>
-                ))}
+                );
+              })}
+            </div>
+
+            {/* Selected Block Sticky-Note Tooltip */}
+            <div
+              style={{
+                backgroundColor: '#FFFFFF',
+                border: '2px solid var(--color-ink)',
+                borderRadius: '8px',
+                padding: '1.25rem',
+                boxShadow: '3px 3px 0px var(--color-ink)'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '0.35rem' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 800, color: 'var(--color-pfas-violet)' }}>
+                  {circuitBlocks[selectedCircuitBlock].name}
+                </span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#666', background: 'rgba(20, 33, 61, 0.08)', padding: '0.1rem 0.4rem', borderRadius: '3px' }}>
+                  {circuitBlocks[selectedCircuitBlock].spec}
+                </span>
+              </div>
+              <p style={{ fontSize: '0.92rem', color: '#222', lineHeight: 1.5 }}>
+                {circuitBlocks[selectedCircuitBlock].role}
+              </p>
+            </div>
+          </div>
+
+          {/* Stop D: The DPV Signal & S_net Differential Formula */}
+          <div
+            style={{
+              backgroundColor: '#FFFFFF',
+              color: 'var(--color-ink)',
+              borderRadius: '16px',
+              border: '3px solid var(--color-ink)',
+              padding: '2rem',
+              boxShadow: '6px 6px 0px var(--color-ink)',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+              gap: '2.5rem',
+              alignItems: 'center'
+            }}
+          >
+            <div>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', background: 'var(--color-pfas-violet)', color: '#FFFFFF', padding: '0.2rem 0.6rem', borderRadius: '4px', fontWeight: 700 }}>
+                STOP D · QUANTIFICATION & CORRECTION
+              </span>
+              <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.85rem', marginTop: '0.75rem', marginBottom: '0.5rem' }}>
+                Cancelling borewell interference.
+              </h3>
+              <p style={{ fontSize: '0.95rem', color: '#333', lineHeight: 1.55, marginBottom: '1.25rem' }}>
+                Hard borewell water contains varying calcium, chloride, and carbonate salts that shift absolute peak heights. By measuring both MIP and NIP electrodes in the exact same sample droplet and computing the normalised differential drop <strong>S_net</strong>, salt matrix effects cancel out.
+              </p>
+
+              {/* S_net Yellow Box Formula */}
+              <div
+                style={{
+                  backgroundColor: 'var(--color-signal-yellow)',
+                  border: '2.5px solid var(--color-ink)',
+                  borderRadius: '8px',
+                  padding: '1.1rem',
+                  boxShadow: '3px 3px 0px var(--color-ink)',
+                  marginBottom: '1rem'
+                }}
+              >
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                  Matrix-Corrected Differential Metric
+                </div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.92rem', fontWeight: 700, overflowX: 'auto', padding: '0.2rem 0' }}>
+                  S_net = [(ΔI0,MIP − ΔI_MIP) / ΔI0,MIP] − [(ΔI0,NIP − ΔI_NIP) / ΔI0,NIP]
+                </div>
+                <div style={{ fontSize: '0.78rem', color: '#333', marginTop: '0.4rem', fontStyle: 'italic' }}>
+                  Where ΔI0 is baseline peak current in pure buffer, and ΔI is peak current in the eluate.
+                </div>
+              </div>
+
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#555' }}>
+                DPV Scan Parameters: –0.1 V to +0.5 V · 5 mV step · 50 mV pulse · 50 ms width · ~60 s scan
               </div>
             </div>
 
-            {/* DPV SVG Chart */}
-            <div className="relative w-full aspect-[16/9] bg-[#02050E] rounded-lg border border-slate-800 p-2 flex items-center justify-center">
-              <svg viewBox="0 0 500 280" className="w-full h-full">
-                {/* Grid Lines */}
-                <line x1="50" y1="30" x2="50" y2="240" stroke="#1e293b" strokeWidth="1" />
-                <line x1="50" y1="240" x2="470" y2="240" stroke="#1e293b" strokeWidth="1" />
-                <line x1="50" y1="135" x2="470" y2="135" stroke="#1e293b" strokeWidth="0.5" strokeDasharray="3 3" />
+            {/* Hand-drawn DPV Graph Paper */}
+            <div
+              className="bg-graph-paper"
+              style={{
+                border: '2.5px solid var(--color-ink)',
+                borderRadius: '12px',
+                padding: '1.5rem',
+                position: 'relative'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', fontWeight: 800 }}>
+                  DPV Peak Response (Simulated)
+                </span>
+                <SimulatedTag text="Simulated curve" />
+              </div>
 
-                {/* Axis Labels */}
-                <text x="260" y="265" fill="#94a3b8" fontSize="10" fontFamily="JetBrains Mono" textAnchor="middle">
-                  Potential vs Ag/AgCl [V] (–0.1 V to +0.5 V)
-                </text>
-                <text x="15" y="135" fill="#94a3b8" fontSize="10" fontFamily="JetBrains Mono" textAnchor="middle" transform="rotate(-90 15 135)">
-                  Current [µA]
-                </text>
+              <svg viewBox="0 0 320 220" fill="none" style={{ width: '100%', height: 'auto', display: 'block' }}>
+                {/* Axes */}
+                <line x1="30" y1="190" x2="300" y2="190" stroke="#14213D" strokeWidth="2" />
+                <line x1="30" y1="20" x2="30" y2="190" stroke="#14213D" strokeWidth="2" />
+                <text x="250" y="206" fontFamily="var(--font-mono)" fontSize="9" fill="#14213D">Potential (V)</text>
+                <text x="10" y="25" fontFamily="var(--font-mono)" fontSize="9" fill="#14213D" transform="rotate(-90 10,25)">Current (µA)</text>
 
-                {/* X-axis ticks */}
-                <text x="50" y="252" fill="#64748b" fontSize="8" fontFamily="JetBrains Mono">–0.1</text>
-                <text x="190" y="252" fill="#64748b" fontSize="8" fontFamily="JetBrains Mono">+0.1</text>
-                <text x="330" y="252" fill="#64748b" fontSize="8" fontFamily="JetBrains Mono">+0.3</text>
-                <text x="460" y="252" fill="#64748b" fontSize="8" fontFamily="JetBrains Mono">+0.5</text>
+                {/* 1. Baseline Peak in Ink (High Peak) */}
+                <path d="M40 185 Q 120 185 160 50 Q 200 185 280 185" stroke="#14213D" strokeWidth="2.5" fill="none" />
+                <text x="175" y="45" fontFamily="var(--font-mono)" fontSize="8.5" fill="#14213D" fontWeight="bold">Pure Buffer Peak (ΔI0)</text>
 
-                {/* 1. Baseline Clean Buffer Peak (Grey dashed) */}
-                <path 
-                  d="M 50 230 Q 180 230, 240 70 Q 300 230, 470 230" 
-                  stroke="#64748b" 
-                  strokeWidth="2" 
-                  strokeDasharray="4 4" 
-                  fill="none" 
-                />
-                <text x="240" y="60" fill="#94a3b8" fontSize="8" fontFamily="JetBrains Mono" textAnchor="middle">
-                  ΔI0,MIP Baseline Peak
-                </text>
+                {/* 2. MIP Peak Shrinks (Violet, Lower Peak) */}
+                <path d="M40 185 Q 120 185 160 115 Q 200 185 280 185" stroke="#6C4AB6" strokeWidth="3" fill="none" />
+                <circle cx="160" cy="115" r="4" fill="#6C4AB6" />
+                <text x="175" y="115" fontFamily="var(--font-mono)" fontSize="8.5" fill="#6C4AB6" fontWeight="bold">MIP with PFAS (Shrunk)</text>
 
-                {/* 2. WE2 NIP Peak (Matrix reference - barely shifts) */}
-                <path 
-                  d="M 50 230 Q 180 230, 240 85 Q 300 230, 470 230" 
-                  stroke="#38bdf8" 
-                  strokeWidth="2" 
-                  fill="none" 
-                />
-                <text x="360" y="90" fill="#38bdf8" fontSize="8" fontFamily="JetBrains Mono">
-                  WE2 (NIP Reference)
-                </text>
-
-                {/* 3. WE1 MIP Peak Dropping based on PFAS Concentration */}
-                {pfasConcentration === 'low' && (
-                  <path 
-                    d="M 50 230 Q 180 230, 240 100 Q 300 230, 470 230" 
-                    stroke="#c084fc" 
-                    strokeWidth="3" 
-                    fill="none" 
-                  />
-                )}
-                {pfasConcentration === 'moderate' && (
-                  <path 
-                    d="M 50 230 Q 180 230, 240 145 Q 300 230, 470 230" 
-                    stroke="#c084fc" 
-                    strokeWidth="3" 
-                    fill="none" 
-                  />
-                )}
-                {pfasConcentration === 'high' && (
-                  <path 
-                    d="M 50 230 Q 180 230, 240 190 Q 300 230, 470 230" 
-                    stroke="#c084fc" 
-                    strokeWidth="3" 
-                    fill="none" 
-                  />
-                )}
-
-                <text x="240" y={pfasConcentration === 'low' ? 95 : pfasConcentration === 'moderate' ? 140 : 185} fill="#c084fc" fontSize="8" fontFamily="JetBrains Mono" textAnchor="middle" fontWeight="bold">
-                  WE1 (MIP): {pfasConcentration.toUpperCase()} PFAS BINDING (ΔI DROPS)
-                </text>
+                {/* 3. NIP Peak (Reference, Flat/Minor change) */}
+                <path d="M40 185 Q 120 185 160 62 Q 200 185 280 185" stroke="#888888" strokeWidth="2" strokeDasharray="4 3" fill="none" />
+                <text x="175" y="70" fontFamily="var(--font-mono)" fontSize="8.5" fill="#888888">NIP Non-specific (Minor shift)</text>
               </svg>
 
-              <div className="absolute top-3 right-3">
-                <SimulatedBadge text="SIMULATED ILLUSTRATIVE CURVE" />
+              <div style={{ marginTop: '0.5rem', fontFamily: 'var(--font-hand)', fontSize: '1.2rem', color: 'var(--color-pfas-violet)' }}>
+                Peak drop = bound PFAS concentration!
               </div>
             </div>
-
-            <div className="mt-3 flex flex-wrap items-center justify-between text-[11px] font-mono text-slate-400">
-              <span>Scan: 5 mV step · 50 mV pulse · 50 ms width</span>
-              <span className="text-purple-300">~60 s scan time per electrode</span>
-            </div>
-          </GlassPanel>
-
-          {/* Part E & F: Matrix Correction Formula & Limitation Note (5 Cols) */}
-          <div className="lg:col-span-5 space-y-6">
-            
-            {/* Part E: Matrix Correction Formula */}
-            <GlassPanel variant="violet" className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs font-bold text-purple-300 px-2 py-0.5 rounded bg-purple-950 border border-purple-500/30">
-                  PART E // DIFFERENTIAL EQUATION
-                </span>
-                <span className="font-mono text-[10px] text-slate-400">BOREWELL RESISTANCE</span>
-              </div>
-
-              <h4 className="font-heading text-base font-bold text-white">
-                GROUNDWATER MATRIX CANCELLATION
-              </h4>
-
-              {/* Glowing Equation Box */}
-              <div className="p-4 rounded-xl bg-[#02050E] border border-purple-500/40 text-center shadow-[0_0_20px_rgba(139,92,246,0.15)]">
-                <div className="font-mono text-xs md:text-sm text-purple-200 tracking-wider font-bold">
-                  S_net = <span className="text-cyan-300">(ΔI0,MIP − ΔI_MIP) / ΔI0,MIP</span>
-                  <br className="my-1" />
-                  − <span className="text-slate-400">(ΔI0,NIP − ΔI_NIP) / ΔI0,NIP</span>
-                </div>
-              </div>
-
-              <p className="text-slate-300 text-xs leading-relaxed font-sans">
-                Subtracting the NIP electrode response cancels out non-specific ionic adsorption, conductivity variations, and electrode fouling typical of hard, mineral-dense Indian groundwater sources.
-              </p>
-            </GlassPanel>
-
-            {/* Part F: Limitation Note */}
-            <div className="p-4 rounded-xl border border-amber-500/30 bg-amber-950/20 space-y-2">
-              <div className="flex items-center gap-2 text-amber-300 font-mono text-xs font-bold">
-                <AlertTriangle className="w-4 h-4 text-amber-400" />
-                <span>SCIENTIFIC LIMITATIONS (HONEST ENGINEERING)</span>
-              </div>
-              <ul className="text-xs text-amber-200/90 font-sans space-y-1.5 list-disc list-inside leading-relaxed">
-                <li>
-                  <strong>Target Specificity:</strong> MIP cavities are imprinted specifically with PFOA and PFOS templates; ultrashort-chain PFAS (e.g., PFBA, PFBS) are not reliably captured.
-                </li>
-                <li>
-                  <strong>Calibration:</strong> S_net triage bands require pre-calibration curves spiked into local borewell water matrices.
-                </li>
-                <li>
-                  <strong>Validation:</strong> Red screening results must be confirmed by an NABL laboratory via reference LC-MS/MS.
-                </li>
-              </ul>
-            </div>
-
           </div>
 
+        </div>
+
+        {/* Scientific Footnote */}
+        <div style={{ marginTop: '3rem', textAlign: 'center', opacity: 0.85, fontSize: '0.85rem', fontStyle: 'italic' }}>
+          * Scientific note: Molecularly imprinted polymer targets PFOA/PFOS; short-chain fluorotelomers are not reliably detected. Triage calibration against spiked local tap and borewell water required.
         </div>
 
       </div>

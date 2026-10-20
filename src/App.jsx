@@ -1,18 +1,17 @@
 import React from 'react';
 import Navbar from './components/Navbar';
-import TelemetryBar from './components/TelemetryBar';
 import Hero from './components/Hero';
 import ProblemSection from './components/ProblemSection';
 import SolutionFlow from './components/SolutionFlow';
 import Innovations from './components/Innovations';
 import PfasModule from './components/PfasModule';
 import MicroplasticModule from './components/MicroplasticModule';
-import Architecture from './components/Architecture';
+import HowItWorks from './components/HowItWorks';
 import FieldWorkflow from './components/FieldWorkflow';
 import TriageTiers from './components/TriageTiers';
 import TestValidity from './components/TestValidity';
 import SignedCode from './components/SignedCode';
-import OfflineSync from './components/OfflineSync';
+import Reporting from './components/Reporting';
 import SourceMap from './components/SourceMap';
 import Prototype from './components/Prototype';
 import CostBreakdown from './components/CostBreakdown';
@@ -20,94 +19,80 @@ import LiveDemo from './components/LiveDemo';
 import Challenges from './components/Challenges';
 import ValidationRoadmap from './components/ValidationRoadmap';
 import Scalability from './components/Scalability';
-import Impact from './components/Impact';
-import SystemView from './components/SystemView';
 import FinalVision from './components/FinalVision';
 import References from './components/References';
 import Footer from './components/Footer';
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-[#050B18] text-slate-100 selection:bg-cyan-500/30 selection:text-cyan-200">
-      {/* Sticky Navigation */}
+    <div className="hydrotrace-app">
+      {/* Editorial Top Navigation */}
       <Navbar />
 
-      {/* Main Content Area */}
-      <main className="relative">
-        {/* Hero Section */}
-        <Hero />
+      {/* Hero Section (Paper bg + Teal Organic Blob) */}
+      <Hero />
 
-        {/* Live Instrument Telemetry Status Ribbon */}
-        <TelemetryBar />
+      {/* 01 Problem Section (Solid Dark Ink Spread) */}
+      <ProblemSection />
 
-        {/* Section 01: The Problem */}
-        <ProblemSection />
+      {/* 02 Solution Flow (Sky bg + 8 River Stations) */}
+      <SolutionFlow />
 
-        {/* Section 02: Our Solution (Snake Layout) */}
-        <SolutionFlow />
+      {/* 03 Innovations (Butter bg + 6 Solid Bento Tiles) */}
+      <Innovations />
 
-        {/* Section 03: Key Innovations */}
-        <Innovations />
+      {/* 04 PFAS Module (Solid Violet bg + 4 Lab-bench Stops) */}
+      <PfasModule />
 
-        {/* Section 04: PFAS Module (Pre-concentration + MIP/NIP + DIY Potentiostat + DPV) */}
-        <PfasModule />
+      {/* 05 Microplastic Module (Peach bg + Clock-face 5-step Stepper) */}
+      <MicroplasticModule />
 
-        {/* Section 05: Microplastic Module (Nile Red + Optical Train + MFI Gauge) */}
-        <MicroplasticModule />
+      {/* 06 How It Connects (Paper bg + Marker System Blueprint) */}
+      <HowItWorks />
 
-        {/* Section 06: Complete Technical Architecture */}
-        <Architecture />
+      {/* 07 Field Workflow (Solid Teal bg + Synchronized OLED Screen) */}
+      <FieldWorkflow />
 
-        {/* Section 07: Field Workflow */}
-        <FieldWorkflow />
+      {/* 08 Triage Framework (Paper bg + 3 Solid-color Posters) */}
+      <TriageTiers />
 
-        {/* Section 08: Honest Triage Tiers */}
-        <TriageTiers />
+      {/* 09 Valid-Test Quality Checks (Lilac bg + Clipboard Checklist) */}
+      <TestValidity />
 
-        {/* Section 09: Test Validity Checks */}
-        <TestValidity />
+      {/* 10 Cryptographic Signed Code (Ink bg + Yellow Hero Bitfield) */}
+      <SignedCode />
 
-        {/* Section 10: Signed 12-Character SMS Code */}
-        <SignedCode />
+      {/* 11 Zero-Infrastructure Reporting (Butter bg + 3 Comic Panels) */}
+      <Reporting />
 
-        {/* Section 11: Offline-First Reporting */}
-        <OfflineSync />
+      {/* 12 Spatial District Surveillance (Sky bg + Interactive Village Map) */}
+      <SourceMap />
 
-        {/* Section 12: Source Intelligence Map */}
-        <SourceMap />
+      {/* 13 Hardware Prototype (Paper bg + Exploded Blueprint) */}
+      <Prototype />
 
-        {/* Section 13: Prototype Blueprint & Exploded View */}
-        <Prototype />
+      {/* 14 Unit Economics & Cost (Peach bg + BOM Bar Chart & Receipt) */}
+      <CostBreakdown />
 
-        {/* Section 14: Cost Breakdown & Lab Comparison */}
-        <CostBreakdown />
+      {/* 15 Live Field Test Demo (Ink bg + Accelerated State Machine) */}
+      <LiveDemo />
 
-        {/* Section 15: Simulated Live Field Test Demo */}
-        <LiveDemo />
+      {/* 16 Engineering Challenges (Lilac bg + Pinned Notebook Slips) */}
+      <Challenges />
 
-        {/* Section 16: Engineering Challenges & Answers */}
-        <Challenges />
+      {/* 17 Validation Roadmap (Paper bg + 5 Milestone Flags) */}
+      <ValidationRoadmap />
 
-        {/* Section 17: Validation Roadmap */}
-        <ValidationRoadmap />
+      {/* 18 Scale & Impact (Solid Teal bg + PIB JJM Figures) */}
+      <Scalability />
 
-        {/* Section 18: Scalability & National Network */}
-        <Scalability />
+      {/* 19 Final Vision (Solid Coral bg + SIH Badges) */}
+      <FinalVision />
 
-        {/* Section 19: Impact */}
-        <Impact />
+      {/* References & Bibliography (Paper bg + Printed Citations) */}
+      <References />
 
-        {/* Section 20: Complete System View */}
-        <SystemView />
-
-        {/* Final Vision & Call to Action */}
-        <FinalVision />
-
-        {/* Academic & Statutory References */}
-        <References />
-      </main>
-
-      {/* Project Footer */}
+      {/* Footer (Dark Ink bg + Hackathon Details) */}
       <Footer />
     </div>
   );

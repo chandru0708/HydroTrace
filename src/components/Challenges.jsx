@@ -1,96 +1,135 @@
 import React from 'react';
-import SectionHeader from '../ui/SectionHeader';
-import GlassPanel from '../ui/GlassPanel';
-import { ShieldCheck, AlertCircle, Wrench, ArrowRight, CheckCircle2 } from 'lucide-react';
-
-const CHALLENGES = [
-  {
-    num: '01',
-    challenge: 'PFAS AT PPT IS BELOW DIRECT SENSOR RANGE',
-    problem: 'Ambient drinking water contains sub-ppb concentrations. Direct electrochemical binding cannot overcome the limits of standard screen-printed electrodes.',
-    strategy: 'WAX Solid Phase Pre-Concentration',
-    answer: 'Single-use weak anion exchange (WAX) cartridge concentrates 250 mL sample into 0.5 mL eluent, achieving 40–60× net enrichment. Red triage flags are confirmed by NABL LC-MS/MS.'
-  },
-  {
-    num: '02',
-    challenge: 'METHANOL ELUENT WEAKENS MIP BINDING',
-    problem: 'Ammoniated methanol is required to break the strong anion-exchange bond on WAX, but organic solvent prevents aqueous rebinding to the MIP cavities.',
-    strategy: 'Dilution or Optional Desolvation',
-    answer: 'Eluate is diluted 1:4 into ~2.5 mL aqueous phosphate buffer to lower methanol < 15%, or evaporated in 3 minutes on an optional miniature 50°C aluminum heater block.'
-  },
-  {
-    num: '03',
-    challenge: 'HARD, SALTY BOREWELL WATER DISTORTS SIGNAL',
-    problem: 'Rural Indian groundwater varies wildly in electrical conductivity, calcium hardness, carbonates, and chlorides, causing non-specific electrochemical shifts.',
-    strategy: 'Dual WE1 (MIP) / WE2 (NIP) Differential AFE',
-    answer: 'Non-imprinted polymer (NIP) reference electrode sees the identical ionic matrix. S_net subtraction cancels background salinity, verified across local tap and borewell calibrations.'
-  },
-  {
-    num: '04',
-    challenge: 'NILE RED ALSO STAINS NATURAL DEBRIS',
-    problem: 'Nile Red binds to hydrophobic lipid membranes, pollen, and natural organic matter, risking false-positive fluorescence.',
-    strategy: 'Dual-Scan Index (MFI) + Macro Audit Photo',
-    answer: 'MFI subtracts the unstained blank scatter (sand/silt). The ESP32-S3 camera captures a 25 KB audit photograph so supervisors can distinguish particulate plastic from cellular debris.'
-  },
-  {
-    num: '05',
-    challenge: 'FRAUDULENT OR REPLAYED FIELD RESULTS',
-    problem: 'Contracted field workers might submit forged clean water reports or resend the same green code repeatedly.',
-    strategy: 'HMAC-SHA256 Signature + Monotonic Counter',
-    answer: 'Each 12-char code encapsulates a 26-bit HMAC calculated with a per-device eFuse secret and an irreversible test counter. Replayed or altered codes fail with 1 in 67 million odds.'
-  },
-  {
-    num: '06',
-    challenge: 'PFAS LEACHING FROM TESTING KIT COMPONENTS',
-    problem: 'PFAS is ubiquitous in fluoropolymer laboratory plastics (PTFE tubing, Teflon tape, Viton O-rings), which would cause disastrous false positives.',
-    strategy: 'Strict Fluoropolymer-Free Materials',
-    answer: 'All fluidic pathways are exclusively manufactured from certified high-purity polypropylene (PP) and high-density polyethylene (HDPE). Zero PTFE parts anywhere in the kit.'
-  }
-];
 
 export default function Challenges() {
+  const challenges = [
+    {
+      num: '01',
+      problem: 'PFAS exists at parts-per-trillion, below direct sensor LOD.',
+      fix: 'WAX solid-phase extraction pre-concentrates 250 mL into 0.5 mL (40–60× boost). Suspect detections route directly to NABL labs for LC-MS/MS confirmation.',
+      rotate: '-1.5deg'
+    },
+    {
+      num: '02',
+      problem: 'Ammoniated methanol eluent weakens MIP cavity binding affinity.',
+      fix: 'We dilute the 0.5 mL eluate 1:4 into 2.0 mL aqueous phosphate buffer (or optionally evaporate methanol on a 3.3V micro-heater block before redissolution).',
+      rotate: '1.2deg'
+    },
+    {
+      num: '03',
+      problem: 'Hard, salty borewell water distorts electrochemical peak potentials.',
+      fix: 'MIP minus NIP differential sensing. Both electrodes experience identical ionic matrix effects in the same drop; differential S_net cancels baseline shifts.',
+      rotate: '-2deg'
+    },
+    {
+      num: '04',
+      problem: 'Nile Red non-specifically stains natural lipids and plant debris.',
+      fix: 'Dual verification: photodiode subtracts unstained blank (MFI), and ESP32-S3 macro camera records a high-resolution audit photo for manual/automated review.',
+      rotate: '1.8deg'
+    },
+    {
+      num: '05',
+      problem: 'Falsified reports or replay of historical good results by operators.',
+      fix: 'Hardware HMAC-SHA256 signature with monotonic 12-bit test counter and DS3231 timestamp. Resent codes are rejected by the server as counter reuse.',
+      rotate: '-1deg'
+    },
+    {
+      num: '06',
+      problem: 'Kit components leaching fluoropolymers (false positives).',
+      fix: '100% certified PTFE-free architecture. All syringes, seals, tubing, and housings use virgin polypropylene or high-density polyethylene, checked by routine field blanks.',
+      rotate: '1.5deg'
+    }
+  ];
+
   return (
-    <section id="challenges" className="py-28 relative tech-grid bg-[#050A19] border-t border-slate-800/80">
-      <div className="container-max">
+    <section
+      id="challenges"
+      style={{
+        backgroundColor: 'var(--color-lilac)',
+        color: 'var(--color-ink)',
+        padding: '5.5rem 1.5rem',
+        borderBottom: '2px solid var(--color-ink)'
+      }}
+    >
+      <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         
-        <SectionHeader
-          number="16"
-          category="RIGOROUS PROBLEM SOLVING"
-          title="ENGINEERING CHALLENGES — AND OUR ANSWERS"
-          subtitle="Honest recognition of real-world analytical, chemical, and operational failure modes encountered in rural deployment, matched with concrete engineering countermeasures."
-          accent="cyan"
-        />
+        {/* Header */}
+        <div style={{ textAlign: 'center', maxWidth: '820px', margin: '0 auto 4rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: 'var(--color-pfas-violet)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem', fontWeight: 700 }}>
+            16 · Rigorous Engineering Honesty
+          </div>
+          <h2
+            style={{
+              fontFamily: 'var(--font-serif)',
+              fontSize: 'clamp(2.3rem, 4.4vw, 4rem)',
+              fontWeight: 900,
+              lineHeight: 1.15
+            }}
+          >
+            Hard problems, honest answers.
+          </h2>
+          <p style={{ marginTop: '0.75rem', fontSize: '1.1rem', color: '#2B2B2B' }}>
+            Emerging contaminant sensing in field conditions has genuine scientific limitations. Here is how each failure mode is engineered away:
+          </p>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {CHALLENGES.map((item, idx) => (
-            <GlassPanel key={idx} className="flex flex-col justify-between group hover:border-cyan-500/40">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="font-mono text-xs font-bold text-cyan-400 px-2 py-0.5 rounded bg-cyan-950 border border-cyan-500/30">
-                    CHALLENGE // {item.num}
-                  </span>
-                  <Wrench className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" />
-                </div>
+        {/* 6 Torn Notebook Slips Pinned on Flat Board */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
+          {challenges.map((c) => (
+            <div
+              key={c.num}
+              style={{
+                backgroundColor: '#FFFFFF',
+                border: '2.5px solid var(--color-ink)',
+                borderRadius: '12px',
+                padding: '2rem 1.75rem',
+                boxShadow: '5px 5px 0px var(--color-ink)',
+                transform: `rotate(${c.rotate})`,
+                transition: 'transform 0.15s ease',
+                position: 'relative'
+              }}
+            >
+              {/* Pushpin at top center */}
+              <div
+                style={{
+                  width: '14px',
+                  height: '14px',
+                  borderRadius: '50%',
+                  backgroundColor: 'var(--color-nile-coral)',
+                  border: '2px solid var(--color-ink)',
+                  position: 'absolute',
+                  top: '-8px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                }}
+              />
 
-                <h3 className="font-heading text-sm sm:text-base font-bold text-white mb-2 leading-snug">
-                  {item.challenge}
-                </h3>
-
-                <p className="text-slate-400 text-xs font-sans mb-4 leading-relaxed">
-                  {item.problem}
-                </p>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.1rem', fontWeight: 900, color: 'var(--color-pfas-violet)' }}>
+                  CHALLENGE {c.num}
+                </span>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-slate-950/80 border border-cyan-500/20 space-y-1.5 mt-2">
-                <div className="flex items-center gap-1.5 text-cyan-300 font-mono text-[11px] font-bold">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span>{item.strategy}</span>
+              {/* Problem */}
+              <div style={{ marginBottom: '1rem' }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', fontWeight: 800, color: 'var(--color-alert-red)', textTransform: 'uppercase' }}>
+                  THE OBSTACLE:
                 </div>
-                <p className="text-slate-300 font-sans text-xs leading-relaxed">
-                  {item.answer}
-                </p>
+                <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.98rem', fontWeight: 700, color: 'var(--color-ink)', marginTop: '0.2rem', lineHeight: 1.4 }}>
+                  {c.problem}
+                </div>
               </div>
-            </GlassPanel>
+
+              {/* Fix */}
+              <div style={{ background: 'var(--color-paper)', border: '1.5px solid rgba(20, 33, 61, 0.2)', borderRadius: '6px', padding: '0.85rem' }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', fontWeight: 800, color: 'var(--color-leaf-green)', textTransform: 'uppercase' }}>
+                  OUR MITIGATION:
+                </div>
+                <div style={{ fontSize: '0.88rem', color: '#333', marginTop: '0.25rem', lineHeight: 1.5 }}>
+                  {c.fix}
+                </div>
+              </div>
+            </div>
           ))}
         </div>
 

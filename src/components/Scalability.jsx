@@ -1,138 +1,141 @@
 import React from 'react';
-import SectionHeader from '../ui/SectionHeader';
-import GlassPanel from '../ui/GlassPanel';
-import { Network, TrendingUp, Users, School, Building2, Droplets, CheckCircle } from 'lucide-react';
-
-const FUTURE_SCOPE = [
-  { step: '01', title: 'CURRENT PROTOTYPE', sub: 'PFOA/PFOS + Microplastics' },
-  { step: '02', title: 'MORE TARGETS', sub: 'Pharmaceutical MIP Strips (Same Reader)' },
-  { step: '03', title: 'READER V2', sub: 'Custom 4-Layer PCB + Built-in Fluidics' },
-  { step: '04', title: 'MADE IN INDIA', sub: 'Mass Strip Printing with MSMEs' },
-  { step: '05', title: 'NATIONAL ROLLOUT', sub: 'Integration into JJM & WQMIS' }
-];
-
-const SCALING_METRICS = [
-  { value: '15.44 Cr', label: 'Rural Tap Connections', sub: 'Active drinking supply network' },
-  { value: '24.80 L', label: 'FTK-Trained Women', sub: 'Grassroots surveillance force' },
-  { value: '2,162', label: 'WQMIS Water Labs', sub: 'Accredited referral network' },
-  { value: '9.32 L', label: 'Schools with Tap Water', sub: 'High-vulnerability monitoring points' }
-];
+import { SourceCaption } from '../ui/SimulatedTag';
 
 export default function Scalability() {
+  const stones = [
+    { num: 'I', title: 'Current Prototype', desc: 'Dual screening for PFOA/PFOS and microplastics in 250 mL water.' },
+    { num: 'II', title: 'Modular Strip Expansion', desc: 'Same reader accepts new MIP strips targeting pharmaceuticals & pesticides.' },
+    { num: 'III', title: 'Reader V2 Integration', desc: 'Integrated custom single-board PCB with motorized spring compression.' },
+    { num: 'IV', title: 'Make in India MSME', desc: 'Tooling transfer to domestic medical diagnostic manufacturers.' },
+    { num: 'V', title: 'National Rollout', desc: 'Integrated into National Jal Jeevan Mission FTK training & WQMIS portal.' }
+  ];
+
+  const statMetrics = [
+    { val: '15.44 Cr', label: 'Rural Tap Connections Provided' },
+    { val: '24.80 Lakh', label: 'Women Trained on Field Test Kits' },
+    { val: '2,162', label: 'Laboratories Integrated on WQMIS' },
+    { val: '9.32 Lakh', label: 'Rural Schools with Tap Water Supply' }
+  ];
+
+  const impactStatements = [
+    { title: 'Early Warning Triage', text: 'Flags contaminated habitations in 35 minutes before chronic bioaccumulation occurs.' },
+    { title: '50× Cost Reduction', text: 'Screens suspect sources at ₹150–200 instead of ₹8,000 commercial laboratory charges.' },
+    { title: 'Two Emerging Classes', text: 'Simultaneously captures both persistent fluorochemicals and synthetic polymer particles.' },
+    { title: 'Works Without Internet', text: 'Operates seamlessly via 2G keypad SMS or on-device cache in deep rural blind spots.' },
+    { title: 'Cryptographically Trusted Data', text: 'Guarantees tamper-proof provenance for public health planning via HMAC signatures.' },
+    { title: 'Evidence for IS 10500 Revision', text: 'Generates nationwide empirical baseline data to inform new statutory Indian standards.' }
+  ];
+
   return (
-    <section id="scalability" className="py-28 relative tech-grid bg-[#040817] border-t border-slate-800/80">
-      <div className="container-max">
+    <section
+      id="impact"
+      style={{
+        backgroundColor: 'var(--color-river-teal)',
+        color: 'var(--color-paper)',
+        padding: '5.5rem 1.5rem',
+        borderBottom: '2px solid var(--color-ink)'
+      }}
+    >
+      <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         
-        <SectionHeader
-          number="18"
-          category="NATIONAL DEPLOYMENT HORIZON"
-          title="FROM ONE KIT TO A NATIONAL SCREENING NETWORK"
-          subtitle="Jal-Drishti leverages the existing 24.8 lakh trained field water testers under Jal Jeevan Mission, converting routine testing personnel into the frontline surveillance army for emerging contaminants."
-          accent="cyan"
-        />
+        {/* Header */}
+        <div style={{ textAlign: 'center', maxWidth: '820px', margin: '0 auto 4rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: 'var(--color-signal-yellow)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem', fontWeight: 700 }}>
+            18 · National Scale & Roadmap
+          </div>
+          <h2
+            style={{
+              fontFamily: 'var(--font-serif)',
+              fontSize: 'clamp(2.3rem, 4.4vw, 4rem)',
+              fontWeight: 900,
+              lineHeight: 1.15
+            }}
+          >
+            From one kit to a national screening network.
+          </h2>
+          <p style={{ marginTop: '0.75rem', fontSize: '1.1rem', color: '#CDEFF2' }}>
+            Built specifically to leverage the existing 24-lakh-strong rural testing workforce established under the Jal Jeevan Mission.
+          </p>
+        </div>
 
-        {/* 5-Step Future Scope Line */}
-        <div className="mb-14">
-          <div className="text-xs font-mono uppercase text-slate-400 mb-3 tracking-wider">
-            SCALING ROADMAP // TECHNOLOGY & PRODUCTION EVOLUTION
+        {/* Top: 5 Stepping Stones Across River */}
+        <div style={{ marginBottom: '4.5rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--color-signal-yellow)', marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            5-Stage Scale Stepping Stones:
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-            {FUTURE_SCOPE.map((item, idx) => (
-              <div 
-                key={idx}
-                className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 flex flex-col justify-between"
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '1rem' }}>
+            {stones.map((st) => (
+              <div
+                key={st.num}
+                style={{
+                  backgroundColor: '#FFFFFF',
+                  color: 'var(--color-ink)',
+                  border: '2.5px solid var(--color-ink)',
+                  borderRadius: '12px',
+                  padding: '1.5rem 1.25rem',
+                  boxShadow: '4px 4px 0px var(--color-ink)'
+                }}
               >
-                <div>
-                  <span className="font-mono text-xs font-bold text-cyan-400 bg-cyan-950 border border-cyan-500/30 px-2 py-0.5 rounded">
-                    STAGE {item.step}
-                  </span>
-                  <div className="font-heading font-bold text-white text-sm mt-2">
-                    {item.title}
-                  </div>
-                </div>
-                <div className="font-mono text-[11px] text-slate-400 mt-2">
-                  {item.sub}
-                </div>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', fontWeight: 900, color: 'var(--color-river-teal)' }}>
+                  STAGE {st.num}
+                </span>
+                <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.2rem', margin: '0.35rem 0' }}>
+                  {st.title}
+                </h3>
+                <p style={{ fontSize: '0.82rem', color: '#555', lineHeight: 1.45 }}>
+                  {st.desc}
+                </p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Three-Level Network Architecture */}
-        <div className="mb-14">
-          <div className="text-xs font-mono uppercase text-slate-400 mb-3 tracking-wider">
-            THREE-TIER SURVEILLANCE TOPOLOGY
+        {/* Middle: 4 Huge Fraunces Numbers from PIB JJM Factsheet */}
+        <div
+          style={{
+            backgroundColor: '#123956',
+            border: '3px solid rgba(255, 255, 255, 0.4)',
+            borderRadius: '18px',
+            padding: '3rem 2rem',
+            marginBottom: '4.5rem'
+          }}
+        >
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '2.5rem', textAlign: 'center' }}>
+            {statMetrics.map((sm, i) => (
+              <div key={i}>
+                <div style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(2.5rem, 4.5vw, 3.8rem)', fontWeight: 900, color: 'var(--color-signal-yellow)', lineHeight: 1 }}>
+                  {sm.val}
+                </div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: '#CDEFF2', marginTop: '0.75rem', fontWeight: 600 }}>
+                  {sm.label}
+                </div>
+              </div>
+            ))}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <GlassPanel className="space-y-3">
-              <span className="font-mono text-xs font-bold text-cyan-400 bg-cyan-950 border border-cyan-500/30 px-2 py-0.5 rounded">
-                LEVEL 01 // LOCAL
-              </span>
-              <h3 className="font-heading text-lg font-bold text-white">
-                ONE TEST: KIT + TESTER
-              </h3>
-              <p className="text-slate-300 text-xs font-sans leading-relaxed">
-                Village water tester performs the 30–40 min protocol using sealed ampoules and spring syringe. Instant local OLED feedback + buzzer.
-              </p>
-            </GlassPanel>
-
-            <GlassPanel variant="cyan" className="space-y-3">
-              <span className="font-mono text-xs font-bold text-cyan-300 bg-cyan-950 border border-cyan-500/40 px-2 py-0.5 rounded">
-                LEVEL 02 // HABITATION
-              </span>
-              <h3 className="font-heading text-lg font-bold text-white">
-                ONE SOURCE: TEMPORAL LEDGER
-              </h3>
-              <p className="text-slate-300 text-xs font-sans leading-relaxed">
-                Repeated quarterly tests build a source-specific temporal baseline. Audit photos and monotonic HMAC codes prevent falsified records.
-              </p>
-            </GlassPanel>
-
-            <GlassPanel className="space-y-3">
-              <span className="font-mono text-xs font-bold text-purple-400 bg-purple-950 border border-purple-500/30 px-2 py-0.5 rounded">
-                LEVEL 03 // DISTRICT & STATE
-              </span>
-              <h3 className="font-heading text-lg font-bold text-white">
-                STATE & NATIONAL: WQMIS GRID
-              </h3>
-              <p className="text-slate-300 text-xs font-sans leading-relaxed">
-                Aggregated district heatmaps. Automated alerts dispatched when sources turn Red. NABL confirmation queue efficiently managed.
-              </p>
-            </GlassPanel>
+          <div style={{ textAlign: 'center', marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px dashed rgba(205, 239, 242, 0.3)' }}>
+            <SourceCaption source="PIB Jal Jeevan Mission factsheet, Feb 2025" />
           </div>
         </div>
 
-        {/* Real Verified Market-Potential Facts (JJM Factsheet Feb 2025) */}
+        {/* Bottom: 6 Impact Statements as 2-Row Editorial List (NOT generic cards) */}
         <div>
-          <div className="text-xs font-mono uppercase text-slate-400 mb-3 tracking-wider">
-            EXISTING NATIONAL INFRASTRUCTURE READINESS
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--color-signal-yellow)', marginBottom: '1.5rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            Systemic Impact Dimensions:
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-3">
-            {SCALING_METRICS.map((stat, idx) => (
-              <div 
-                key={idx}
-                className="p-5 rounded-xl bg-slate-950 border border-cyan-500/20 text-center flex flex-col justify-between"
-              >
-                <div>
-                  <div className="font-heading text-2xl sm:text-3xl font-extrabold text-cyan-300">
-                    {stat.value}
-                  </div>
-                  <div className="font-heading font-bold text-white text-xs mt-1">
-                    {stat.label}
-                  </div>
-                </div>
-                <div className="text-[10px] font-mono text-slate-400 mt-2">
-                  {stat.sub}
-                </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2.5rem 3.5rem' }}>
+            {impactStatements.map((imp, idx) => (
+              <div key={idx} style={{ borderTop: '2px solid rgba(255, 255, 255, 0.3)', paddingTop: '1.25rem' }}>
+                <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.45rem', color: '#FFFFFF', marginBottom: '0.4rem' }}>
+                  {imp.title}
+                </h3>
+                <p style={{ fontSize: '0.96rem', color: '#CDEFF2', lineHeight: 1.6 }}>
+                  {imp.text}
+                </p>
               </div>
             ))}
-          </div>
-
-          <div className="text-right text-[11px] font-mono text-slate-500">
-            Source: PIB Jal Jeevan Mission factsheet, Feb 2025
           </div>
         </div>
 

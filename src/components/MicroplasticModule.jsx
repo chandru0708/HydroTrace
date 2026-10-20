@@ -1,298 +1,330 @@
-import React, { useState, useEffect } from 'react';
-import SectionHeader from '../ui/SectionHeader';
-import GlassPanel from '../ui/GlassPanel';
-import TelemetryChip from '../ui/TelemetryChip';
-import SimulatedBadge from '../ui/SimulatedBadge';
-import { Camera, Sparkles, Filter, AlertCircle, Play, RotateCcw, CheckCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import MarginNote from '../ui/MarginNote';
+import { SimulatedTag, SourceCaption } from '../ui/SimulatedTag';
 
 export default function MicroplasticModule() {
-  const [activeStep, setActiveStep] = useState(1);
-  const [isShutterActive, setIsShutterActive] = useState(false);
+  const [activeStep, setActiveStep] = useState(4); // default to glowing stained scan
+  const [tierSlider, setTierSlider] = useState(1); // 0: Low, 1: Moderate, 2: High
 
-  // Optical stack components
-  const opticalStack = [
-    { title: '470 nm Blue LED', role: 'Excitation Beam', color: 'blue' },
-    { title: 'Short-Pass Filter', role: 'Cuts > 490 nm Bleed', color: 'cyan' },
-    { title: '25 mm Stained Filter', role: 'Nile Red Tagged Plastics', color: 'orange' },
-    { title: '550 nm Long-Pass', role: 'Blocks Blue Excitation', color: 'amber' },
-    { title: 'BPW34 Photodiode', role: 'Emission Detection', color: 'orange' },
-    { title: 'Op-Amp + ADC', role: 'Transimpedance Digitization', color: 'cyan' }
+  const steps = [
+    { num: 1, name: 'Loaded Filter', desc: 'Raw 25 mm glass-fibre filter with sand, silt, and trapped plastic particles.' },
+    { num: 2, name: 'Blank Scan', desc: '470 nm blue LED illuminates unstained disc. Photodiode records baseline I_blank.' },
+    { num: 3, name: 'Nile Red Stain', desc: '3 drops of Nile Red in ethanol applied; 10-minute incubation begins.' },
+    { num: 4, name: 'Stained Fluorescence', desc: 'Fluorophore adsorbs to polymer surfaces; hydrophobic particles glow bright coral.' },
+    { num: 5, name: 'Audit Photo & Blob Count', desc: 'ESP32-S3 camera takes ~25 KB macro JPEG; blob analysis flags particles ≥ 20 µm.' }
   ];
 
-  const triggerStep = (step) => {
-    setActiveStep(step);
-    if (step === 6) {
-      setIsShutterActive(true);
-      setTimeout(() => setIsShutterActive(false), 500);
-    }
-  };
+  const tiers = [
+    { name: 'Low MFI', particles: '< 15 particles/L eq.', color: 'var(--color-leaf-green)', action: 'Routine retest schedule' },
+    { name: 'Moderate MFI', particles: '15 – 80 particles/L eq.', color: 'var(--color-amber)', action: 'Retest within 2 weeks, notify block' },
+    { name: 'High MFI', particles: '> 80 particles/L eq.', color: 'var(--color-alert-red)', action: 'Sample to NABL lab for µ-FTIR confirmation' }
+  ];
 
   return (
-    <section id="microplastics" className="py-28 relative tech-grid bg-[#070D1C] border-t border-slate-800/80">
-      <div className="container-max">
+    <section
+      id="microplastics"
+      style={{
+        backgroundColor: 'var(--color-peach)',
+        color: 'var(--color-ink)',
+        padding: '5.5rem 1.5rem',
+        borderBottom: '2px solid var(--color-ink)',
+        position: 'relative'
+      }}
+    >
+      <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         
-        <SectionHeader
-          number="05"
-          category="MICROPLASTICS FLUORESCENCE ENGINE"
-          title="MAKING MICROPLASTICS GLOW"
-          subtitle="Nile Red selectively binds to hydrophobic plastic polymer surfaces (PET, PE, PP, PS) and fluoresces intensely in orange/red under 470 nm blue excitation."
-          accent="orange"
-        />
-
-        {/* Telemetry bar specific to Optics */}
-        <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 mb-10 font-mono text-xs">
-          <div className="flex items-center gap-3">
-            <span className="text-orange-400 font-bold uppercase tracking-wide">OPTICAL SENSING</span>
-            <span className="text-slate-600">|</span>
-            <TelemetryChip label="EXCITATION" status="470 nm Blue LED" variant="cyan" />
-            <TelemetryChip label="EMISSION" status="> 550 nm Long-Pass" variant="orange" />
-            <TelemetryChip label="SENSOR" status="BPW34 Silicon Pin" variant="orange" />
+        {/* Header */}
+        <div style={{ maxWidth: '820px', marginBottom: '3.5rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: 'var(--color-nile-coral)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem', fontWeight: 700 }}>
+            05 · Optical Fluorescence Diagnostics
           </div>
-          <SimulatedBadge text="SIMULATED OPTICAL READOUTS" />
+          <h2
+            style={{
+              fontFamily: 'var(--font-serif)',
+              fontSize: 'clamp(2.3rem, 4.4vw, 4rem)',
+              fontWeight: 900,
+              lineHeight: 1.1,
+              marginBottom: '1rem'
+            }}
+          >
+            Making microplastics <span style={{ fontStyle: 'italic', color: 'var(--color-nile-coral)' }}>glow</span>.
+          </h2>
+          <p style={{ fontSize: 'clamp(1.05rem, 1.3vw, 1.25rem)', color: '#2B2B2B', lineHeight: 1.55 }}>
+            Nile Red is an uncharged hydrophobic phenoxazone dye that selectively partitions into plastic polymers. Under 470 nm blue light, it fluoresces intensely in the coral-orange spectrum.
+          </p>
+          <SourceCaption
+            source="Maes et al., Scientific Reports (2017) demonstrated rapid-screening tagging with Nile Red."
+          />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Interactive Layout: Central 5-Step Filter Disc + Side Optical Stack */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '3rem', alignItems: 'center' }} className="mp-grid">
           
-          {/* LEFT: 25mm Filter Disc Simulation Sequence (7 Cols) */}
-          <GlassPanel variant="orange" className="lg:col-span-7 flex flex-col justify-between">
-            <div>
-              <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
-                <span className="font-mono text-xs font-bold text-orange-400 px-2.5 py-1 rounded bg-orange-950/60 border border-orange-500/30">
-                  OPTICAL PROTOCOL · 6 STAGES
-                </span>
-                <span className="font-mono text-xs text-slate-400">
-                  STEP {activeStep} OF 6
-                </span>
-              </div>
+          {/* Left: Clock-Face Circular Stepper with Animated Filter Disc */}
+          <div
+            style={{
+              backgroundColor: '#FFFFFF',
+              borderRadius: '16px',
+              border: '3px solid var(--color-ink)',
+              padding: '2rem',
+              boxShadow: '6px 6px 0px var(--color-ink)',
+              position: 'relative'
+            }}
+          >
+            {/* Stepper Tabs */}
+            <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto', paddingBottom: '0.75rem', marginBottom: '1.5rem', borderBottom: '1px solid rgba(20, 33, 61, 0.15)' }}>
+              {steps.map((st) => (
+                <button
+                  key={st.num}
+                  onClick={() => setActiveStep(st.num)}
+                  style={{
+                    backgroundColor: activeStep === st.num ? 'var(--color-nile-coral)' : 'var(--color-paper)',
+                    color: activeStep === st.num ? '#FFFFFF' : 'var(--color-ink)',
+                    border: '1.5px solid var(--color-ink)',
+                    borderRadius: '6px',
+                    padding: '0.4rem 0.75rem',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                    boxShadow: activeStep === st.num ? '2px 2px 0px var(--color-ink)' : 'none',
+                    transition: 'all 0.1s ease'
+                  }}
+                >
+                  Step {st.num}: {st.name}
+                </button>
+              ))}
+            </div>
 
-              {/* Step Navigation Tabs */}
-              <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 mb-4 font-mono text-[11px]">
-                {[
-                  { s: 1, label: 'LOADED' },
-                  { s: 2, label: 'BLANK' },
-                  { s: 3, label: 'STAIN' },
-                  { s: 4, label: 'STAINED' },
-                  { s: 5, label: 'INDEX' },
-                  { s: 6, label: 'PHOTO' },
-                ].map((item) => (
-                  <button
-                    key={item.s}
-                    onClick={() => triggerStep(item.s)}
-                    className={`py-1 px-1.5 rounded text-center border font-semibold transition-all cursor-pointer ${
-                      activeStep === item.s
-                        ? 'bg-orange-600 text-white border-orange-400 shadow-[0_0_10px_rgba(255,122,61,0.4)]'
-                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
-                    }`}
-                  >
-                    {item.s}. {item.label}
-                  </button>
-                ))}
-              </div>
+            {/* Simulated Filter Disc Visualization */}
+            <div style={{ textAlign: 'center', position: 'relative' }}>
+              <svg viewBox="0 0 320 320" fill="none" style={{ width: '100%', maxHeight: '320px', display: 'block', margin: '0 auto' }}>
+                {/* Chamber Housing Ring */}
+                <circle cx="160" cy="160" r="145" fill="#14213D" stroke="#0E9AA7" strokeWidth="3" />
+                <circle cx="160" cy="160" r="130" fill="#25355A" />
 
-              {/* Enlarged 25 mm Filter Disc Interactive SVG */}
-              <div className="relative w-full aspect-[16/11] bg-[#02050E] rounded-xl border border-orange-500/30 overflow-hidden flex items-center justify-center">
-                {/* Camera shutter flash effect */}
-                {isShutterActive && (
-                  <div className="absolute inset-0 bg-white z-30 opacity-90 transition-opacity duration-300 pointer-events-none" />
+                {/* Glass Fibre Disc Substrate */}
+                <circle
+                  cx="160"
+                  cy="160"
+                  r="110"
+                  fill={activeStep === 2 || activeStep === 4 ? '#0D1B2A' : '#E8ECEF'}
+                  stroke="#14213D"
+                  strokeWidth="2.5"
+                />
+
+                {/* Blue Light Beam on Step 2 and 4 */}
+                {(activeStep === 2 || activeStep === 4) && (
+                  <circle cx="160" cy="160" r="105" fill="#00E5FF" opacity="0.18" />
                 )}
 
-                <svg viewBox="0 0 400 320" className="w-full h-full">
-                  <defs>
-                    <radialGradient id="filterGrad" cx="50%" cy="50%" r="50%">
-                      <stop offset="0%" stopColor="#334155" />
-                      <stop offset="90%" stopColor="#1e293b" />
-                      <stop offset="100%" stopColor="#0f172a" />
-                    </radialGradient>
-                    <radialGradient id="blueBeam" cx="50%" cy="50%" r="60%">
-                      <stop offset="0%" stopColor="rgba(34, 211, 238, 0.4)" />
-                      <stop offset="80%" stopColor="rgba(59, 130, 246, 0.15)" />
-                      <stop offset="100%" stopColor="transparent" />
-                    </radialGradient>
-                    <filter id="fluoGlow" x="-30%" y="-30%" width="160%" height="160%">
-                      <feGaussianBlur stdDeviation="4" result="blur" />
-                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                    </filter>
-                  </defs>
+                {/* Staining Drops on Step 3 */}
+                {activeStep === 3 && (
+                  <g>
+                    <circle cx="140" cy="120" r="8" fill="var(--color-nile-coral)" opacity="0.8" />
+                    <circle cx="180" cy="140" r="10" fill="var(--color-nile-coral)" opacity="0.8" />
+                    <circle cx="155" cy="180" r="7" fill="var(--color-nile-coral)" opacity="0.8" />
+                    <text x="90" y="250" fontFamily="var(--font-hand)" fontSize="18" fill="var(--color-nile-coral)">
+                      3 drops Nile Red (in Ethanol)
+                    </text>
+                  </g>
+                )}
 
-                  {/* 25 mm Polypropylene holder outer ring */}
-                  <circle cx="200" cy="160" r="140" fill="#091322" stroke="#475569" strokeWidth="4" />
-                  <circle cx="200" cy="160" r="125" fill="#0b1a30" stroke="#ff7a3d" strokeWidth="1" strokeDasharray="4 2" />
+                {/* Particles: Sand & Silt (Always beige, never glows) */}
+                <circle cx="120" cy="140" r="4" fill="#C2B280" />
+                <circle cx="135" cy="185" r="3" fill="#A89F91" />
+                <polygon points="190,120 196,124 192,129 187,125" fill="#C2B280" />
+                <circle cx="210" cy="175" r="3.5" fill="#A89F91" />
 
-                  {/* Glass-fibre filter disc */}
-                  <circle cx="200" cy="160" r="115" fill="url(#filterGrad)" stroke="#64748b" strokeWidth="1.5" />
-                  <text x="200" y="70" fill="#94a3b8" fontSize="9" fontFamily="JetBrains Mono" textAnchor="middle">
-                    25 mm GLASS-FIBRE MEMBRANE
-                  </text>
+                {/* Particles: Microplastics (Coral) */}
+                {/* On Step 1 & 2: dull grey-coral. On Step 4 & 5: Bright glowing coral */}
+                <g>
+                  {/* Fragment 1 (PET fiber) */}
+                  <path
+                    d="M140 130 Q 155 125 170 135"
+                    stroke={activeStep >= 4 ? '#FF6B4A' : '#777777'}
+                    strokeWidth={activeStep >= 4 ? '5' : '3'}
+                    strokeLinecap="round"
+                  />
+                  {/* Fragment 2 (PE Bead) */}
+                  <circle
+                    cx="150"
+                    cy="165"
+                    r={activeStep >= 4 ? '7' : '5'}
+                    fill={activeStep >= 4 ? '#FF6B4A' : '#888888'}
+                  />
+                  {activeStep >= 4 && <circle cx="150" cy="165" r="12" fill="#FF6B4A" opacity="0.3" />}
 
-                  {/* STEP 2: Blue 470 nm excitation beam */}
-                  {(activeStep === 2 || activeStep === 4 || activeStep === 6) && (
-                    <circle cx="200" cy="160" r="114" fill="url(#blueBeam)" />
-                  )}
+                  {/* Fragment 3 (PP Flake) */}
+                  <polygon
+                    points="175,170 190,175 185,188 170,182"
+                    fill={activeStep >= 4 ? '#FF6B4A' : '#777777'}
+                  />
+                  {activeStep >= 4 && <polygon points="172,167 193,173 187,191 167,185" fill="#FF6B4A" opacity="0.25" />}
+                </g>
 
-                  {/* Sand / Inorganic Silt Particles (Dark brown/grey, do not fluoresce) */}
-                  <circle cx="160" cy="140" r="5" fill="#57534e" />
-                  <circle cx="230" cy="180" r="4" fill="#78716c" />
-                  <circle cx="170" cy="210" r="6" fill="#44403c" />
-                  <circle cx="240" cy="130" r="4.5" fill="#57534e" />
+                {/* Step 5: Audit Camera Flash & Detection Circles */}
+                {activeStep === 5 && (
+                  <g>
+                    {/* Hand-drawn green circles around particles ≥ 20 µm */}
+                    <circle cx="150" cy="165" r="16" fill="none" stroke="#2BA84A" strokeWidth="2.5" strokeDasharray="4 2" />
+                    <text x="170" y="160" fontFamily="var(--font-mono)" fontSize="9" fill="#2BA84A" fontWeight="bold">≥ 28 µm</text>
 
-                  {/* STEP 3: Nile Red Droplets landing */}
-                  {activeStep === 3 && (
-                    <g className="animate-bounce">
-                      <circle cx="190" cy="130" r="8" fill="#ea580c" opacity="0.8" />
-                      <circle cx="215" cy="150" r="7" fill="#ea580c" opacity="0.8" />
-                      <circle cx="185" cy="180" r="6" fill="#ea580c" opacity="0.8" />
-                      <text x="200" y="165" fill="#ffffff" fontSize="10" fontFamily="JetBrains Mono" textAnchor="middle" fontWeight="bold">
-                        3 DROPS IN ETHANOL
-                      </text>
-                    </g>
-                  )}
+                    <circle cx="180" cy="180" r="18" fill="none" stroke="#2BA84A" strokeWidth="2.5" strokeDasharray="4 2" />
+                    <text x="200" y="195" fontFamily="var(--font-mono)" fontSize="9" fill="#2BA84A" fontWeight="bold">≥ 34 µm</text>
+                  </g>
+                )}
+              </svg>
 
-                  {/* Microplastic Particles (PET, PE, PP, PS) */}
-                  {/* When unstained (Step 1-3): simple translucent particles */}
-                  {activeStep <= 3 && (
-                    <g>
-                      <circle cx="180" cy="160" r="8" fill="#94a3b8" opacity="0.6" stroke="#cbd5e1" />
-                      <polygon points="210,130 225,145 205,150" fill="#94a3b8" opacity="0.6" stroke="#cbd5e1" />
-                      <circle cx="220" cy="200" r="7" fill="#94a3b8" opacity="0.6" stroke="#cbd5e1" />
-                    </g>
-                  )}
-
-                  {/* When stained (Step 4, 5, 6): INTENSE ORANGE FLUORESCENCE */}
-                  {activeStep >= 4 && (
-                    <g filter="url(#fluoGlow)">
-                      {/* Particle 1: 45 µm fragment */}
-                      <circle cx="180" cy="160" r="9" fill="#ff7a3d" stroke="#fed7aa" strokeWidth="1.5" />
-                      {/* Particle 2: 70 µm irregular fragment */}
-                      <polygon points="210,128 228,145 204,152" fill="#ff7a3d" stroke="#fed7aa" strokeWidth="1.5" />
-                      {/* Particle 3: 35 µm particle */}
-                      <circle cx="220" cy="200" r="8" fill="#ff7a3d" stroke="#fed7aa" strokeWidth="1.5" />
-                    </g>
-                  )}
-
-                  {/* STEP 6: Camera Blob Outlines around particles ≥ 20 µm */}
-                  {activeStep === 6 && (
-                    <g>
-                      {/* Blob bounding boxes */}
-                      <rect x="165" y="145" width="30" height="30" rx="3" fill="none" stroke="#22d3ee" strokeWidth="1.5" strokeDasharray="3 1" />
-                      <text x="180" y="140" fill="#22d3ee" fontSize="7" fontFamily="JetBrains Mono" textAnchor="middle">BLOB #1 ~45µm</text>
-
-                      <rect x="198" y="122" width="35" height="34" rx="3" fill="none" stroke="#22d3ee" strokeWidth="1.5" strokeDasharray="3 1" />
-                      <text x="215" y="118" fill="#22d3ee" fontSize="7" fontFamily="JetBrains Mono" textAnchor="middle">BLOB #2 ~70µm</text>
-
-                      <rect x="207" y="187" width="26" height="26" rx="3" fill="none" stroke="#22d3ee" strokeWidth="1.5" strokeDasharray="3 1" />
-                      <text x="220" y="222" fill="#22d3ee" fontSize="7" fontFamily="JetBrains Mono" textAnchor="middle">BLOB #3 ~35µm</text>
-
-                      <text x="200" y="275" fill="#38bdf8" fontSize="9" fontFamily="JetBrains Mono" textAnchor="middle" fontWeight="bold">
-                        ESP32-S3 MACRO AUDIT PHOTO CAPTURED (25 KB JPEG)
-                      </text>
-                    </g>
-                  )}
-                </svg>
-
-                {/* Status Overlay */}
-                <div className="absolute bottom-3 left-3 right-3 p-2.5 rounded bg-slate-950/90 border border-slate-800 flex items-center justify-between text-xs font-mono">
-                  <div>
-                    <span className="text-slate-400">CURRENT READOUT: </span>
-                    <span className="text-orange-400 font-bold">
-                      {activeStep === 1 && 'RAW PARTICLES LOADED'}
-                      {activeStep === 2 && 'I_blank = 142 nA (BACKGROUND)'}
-                      {activeStep === 3 && 'STAINING INCUBATION: 10 MIN'}
-                      {activeStep === 4 && 'I_stained = 588 nA (ORANGE PEAK)'}
-                      {activeStep === 5 && 'MFI = 446 nA (LOW MFI BAND)'}
-                      {activeStep === 6 && 'AUDIT PHOTO: 3 BLOBS ≥ 20 µm'}
-                    </span>
-                  </div>
-                  <button 
-                    onClick={() => triggerStep((activeStep % 6) + 1)}
-                    className="px-2 py-1 rounded bg-orange-950 border border-orange-500/40 text-orange-300 hover:bg-orange-900 text-[10px] cursor-pointer"
-                  >
-                    NEXT STAGE →
-                  </button>
+              {/* Step Summary Caption */}
+              <div style={{ marginTop: '1rem', background: 'var(--color-paper)', border: '1.5px solid var(--color-ink)', padding: '0.8rem', borderRadius: '8px' }}>
+                <div style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '1rem' }}>
+                  {steps[activeStep - 1].name}
+                </div>
+                <div style={{ fontSize: '0.88rem', color: '#555', marginTop: '0.2rem' }}>
+                  {steps[activeStep - 1].desc}
                 </div>
               </div>
             </div>
 
-            {/* MFI Equation & Explanation */}
-            <div className="mt-4 p-3 rounded-lg bg-slate-900/80 border border-orange-500/20 flex flex-wrap items-center justify-between gap-2 font-mono text-xs">
-              <div>
-                <span className="text-orange-300 font-bold">MFI = I_stained − I_blank</span>
-                <span className="text-slate-400 ml-2">Subtracts filter scatter & mineral silt background</span>
-              </div>
-              <span className="text-slate-500 text-[10px]">BPW34 Photodiode Transimpedance</span>
+            {/* Handwritten Caveat Margin Notes */}
+            <div style={{ marginTop: '1.25rem', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
+              <MarginNote text="ethanol, not acetone — acetone dissolves plastic!" direction="right" color="var(--color-nile-coral)" />
+              <SimulatedTag text="Simulated optical capture" />
             </div>
-          </GlassPanel>
+          </div>
 
-          {/* RIGHT: Optical Stack & Triage Bands (5 Cols) */}
-          <div className="lg:col-span-5 space-y-6">
+          {/* Right: Optical Train Stack & Formula Panel */}
+          <div>
             
-            {/* Optical Train Block Diagram */}
-            <GlassPanel variant="orange">
-              <span className="font-mono text-xs font-bold text-orange-400 px-2 py-0.5 rounded bg-orange-950 border border-orange-500/30">
-                OPTICAL ARCHITECTURE
+            {/* Taped Paper Card */}
+            <div
+              style={{
+                backgroundColor: 'var(--color-paper)',
+                border: '3px solid var(--color-ink)',
+                borderRadius: '12px',
+                padding: '1.75rem',
+                boxShadow: '5px 5px 0px var(--color-ink)',
+                position: 'relative',
+                marginBottom: '1.75rem'
+              }}
+            >
+              {/* Fake Tape Corners */}
+              <div className="tape-strip" style={{ top: '-8px', left: '20px', transform: 'rotate(-5deg)' }} />
+              <div className="tape-strip" style={{ top: '-8px', right: '20px', transform: 'rotate(5deg)' }} />
+
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', fontWeight: 800, color: 'var(--color-nile-coral)' }}>
+                THE OPTICAL TRAIN (LIGHT-TIGHT CASING)
               </span>
-              <h4 className="font-heading text-base font-bold text-white mt-2 mb-3">
-                LIGHT-TIGHT FLUORESCENCE STACK
-              </h4>
 
-              <div className="space-y-2">
-                {opticalStack.map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-3 p-2 rounded bg-slate-900/60 border border-slate-800 text-xs font-mono">
-                    <span className="text-slate-500 w-4">0{idx + 1}</span>
-                    <div className="flex-1">
-                      <div className="font-bold text-white">{item.title}</div>
-                      <div className="text-[10px] text-slate-400">{item.role}</div>
-                    </div>
-                    <span className="w-2 h-2 rounded-full bg-orange-400" />
-                  </div>
-                ))}
-              </div>
-            </GlassPanel>
-
-            {/* MFI Tier Gauge & Scientific Notes */}
-            <GlassPanel variant="orange">
-              <span className="font-mono text-xs font-bold text-orange-400 px-2 py-0.5 rounded bg-orange-950 border border-orange-500/30">
-                MFI TRIAGE GAUGE
-              </span>
-              <h4 className="font-heading text-base font-bold text-white mt-2 mb-2">
-                PLASTIC SURFACE AREA INDEX
-              </h4>
-
-              <div className="space-y-2.5 font-mono text-xs">
-                <div className="p-2 rounded bg-slate-900/80 border border-emerald-500/40 flex items-center justify-between">
-                  <span className="text-emerald-400 font-bold">LOW MFI</span>
-                  <span className="text-slate-400 text-[11px]">Routine Retest Schedule</span>
+              {/* Layered Stack Diagram */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '1rem', marginBottom: '1.25rem' }}>
+                <div style={{ background: '#CDEFF2', padding: '0.4rem 0.8rem', borderRadius: '4px', border: '1px solid var(--color-ink)', fontFamily: 'var(--font-mono)', fontSize: '0.8rem' }}>
+                  1. 470 nm Blue LED (Excitation)
                 </div>
-                <div className="p-2 rounded bg-slate-900/80 border border-amber-500/40 flex items-center justify-between">
-                  <span className="text-amber-400 font-bold">MODERATE MFI</span>
-                  <span className="text-slate-400 text-[11px]">Retest within 2 Weeks</span>
+                <div style={{ textAlign: 'center', fontSize: '10px', color: '#888' }}>▼</div>
+                <div style={{ background: '#FFFFFF', padding: '0.4rem 0.8rem', borderRadius: '4px', border: '1px solid var(--color-ink)', fontFamily: 'var(--font-mono)', fontSize: '0.8rem' }}>
+                  2. Short-Pass Optical Filter (Blocks stray wavelengths)
                 </div>
-                <div className="p-2 rounded bg-slate-900/80 border border-rose-500/40 flex items-center justify-between">
-                  <span className="text-rose-400 font-bold">HIGH MFI</span>
-                  <span className="text-slate-400 text-[11px]">Send to Lab for µ-FTIR</span>
+                <div style={{ textAlign: 'center', fontSize: '10px', color: '#888' }}>▼</div>
+                <div style={{ background: '#FFE1D6', padding: '0.4rem 0.8rem', borderRadius: '4px', border: '1.5px solid var(--color-nile-coral)', fontFamily: 'var(--font-mono)', fontSize: '0.8rem', fontWeight: 'bold' }}>
+                  3. Stained 25 mm GF Filter Disc
+                </div>
+                <div style={{ textAlign: 'center', fontSize: '10px', color: '#888' }}>▼</div>
+                <div style={{ background: '#FFFFFF', padding: '0.4rem 0.8rem', borderRadius: '4px', border: '1px solid var(--color-ink)', fontFamily: 'var(--font-mono)', fontSize: '0.8rem' }}>
+                  4. 550 nm Long-Pass Filter (Isolates Nile Red emission)
+                </div>
+                <div style={{ textAlign: 'center', fontSize: '10px', color: '#888' }}>▼</div>
+                <div style={{ background: 'var(--color-butter)', padding: '0.4rem 0.8rem', borderRadius: '4px', border: '1px solid var(--color-ink)', fontFamily: 'var(--font-mono)', fontSize: '0.8rem', fontWeight: 'bold' }}>
+                  5. BPW34 Photodiode + TIA + ESP32 Camera
                 </div>
               </div>
 
-              {/* Honest Chemistry Notes */}
-              <div className="mt-4 pt-3 border-t border-slate-800 text-xs text-slate-300 font-sans space-y-2 leading-relaxed">
-                <p>
-                  <strong className="text-orange-300 font-mono text-[11px]">SOLVENT NOTE: </strong>
-                  Nile Red is delivered in sealed ethanol ampoules, NEVER acetone. Acetone dissolves polystyrene and polycarbonate particles, falsifying the test.
-                </p>
-                <p>
-                  <strong className="text-orange-300 font-mono text-[11px]">SURFACE METRIC: </strong>
-                  MFI correlates to total plastic surface area. It is reported as "particles per litre equivalent", never an absolute count.
-                </p>
-                <p className="text-slate-400 text-[11px]">
-                  *Honest limitation: Nile Red can stain natural plant lipids. The audit photo allows secondary verification.
-                </p>
+              {/* Big MFI Formula */}
+              <div style={{ background: '#FFFFFF', border: '2px solid var(--color-ink)', borderRadius: '8px', padding: '1rem', textAlign: 'center' }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#666', textTransform: 'uppercase' }}>
+                  Microplastic Fluorescence Index
+                </div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-nile-coral)', margin: '0.25rem 0' }}>
+                  MFI = I_stained − I_blank
+                </div>
+                <div style={{ fontSize: '0.78rem', color: '#444' }}>
+                  Background subtraction cancels sand, silt, and filter autofluorescence.
+                </div>
               </div>
-            </GlassPanel>
+            </div>
+
+            {/* Interactive Tier Slider: Low / Moderate / High */}
+            <div
+              style={{
+                backgroundColor: '#FFFFFF',
+                border: '3px solid var(--color-ink)',
+                borderRadius: '12px',
+                padding: '1.5rem',
+                boxShadow: '4px 4px 0px var(--color-ink)'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', fontWeight: 800 }}>
+                  CALIBRATED TRIAGE TIER:
+                </span>
+                <span
+                  style={{
+                    backgroundColor: tiers[tierSlider].color,
+                    color: tierSlider === 1 ? 'var(--color-ink)' : '#FFFFFF',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.75rem',
+                    fontWeight: 800,
+                    padding: '0.2rem 0.6rem',
+                    borderRadius: '4px'
+                  }}
+                >
+                  {tiers[tierSlider].name}
+                </span>
+              </div>
+
+              <input
+                type="range"
+                min="0"
+                max="2"
+                step="1"
+                value={tierSlider}
+                onChange={(e) => setTierSlider(parseInt(e.target.value))}
+                style={{ width: '100%', cursor: 'pointer', accentColor: 'var(--color-nile-coral)', marginBottom: '0.75rem' }}
+              />
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#666' }}>
+                <span>Low</span>
+                <span>Moderate</span>
+                <span>High</span>
+              </div>
+
+              <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px dashed #ccc', fontSize: '0.85rem' }}>
+                <strong>Equivalent Surface:</strong> {tiers[tierSlider].particles}
+                <div style={{ color: '#444', marginTop: '0.2rem' }}>
+                  <strong>Action:</strong> {tiers[tierSlider].action}
+                </div>
+              </div>
+            </div>
+
+            <div style={{ marginTop: '1rem', fontStyle: 'italic', fontSize: '0.8rem', color: '#555' }}>
+              * Calibrated against micro-milled PET, PE, PP, PS. Tracks hydrophobic surface area, reported as particles/L equivalent.
+            </div>
 
           </div>
 
         </div>
 
       </div>
+
+      <style>{`
+        @media (max-width: 900px) {
+          .mp-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

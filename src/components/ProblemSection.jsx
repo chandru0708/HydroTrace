@@ -1,183 +1,218 @@
 import React from 'react';
-import SectionHeader from '../ui/SectionHeader';
-import GlassPanel from '../ui/GlassPanel';
-import { EyeOff, Scale, Waves, Building2, TestTube2, DatabaseZap, AlertCircle, ArrowRight } from 'lucide-react';
-
-const JOURNEY_STAGES = [
-  { step: '01', label: 'Water Source', sub: 'Groundwater / Surface Lake', status: 'Unmonitored' },
-  { step: '02', label: 'Supply Network', sub: 'Piped Water Supply Scheme', status: 'In Transit' },
-  { step: '03', label: 'Village Tap', sub: 'Delivered to Rural Household', status: 'At Point of Use' },
-  { step: '04', label: 'Current Field Kit', sub: 'Only Tests pH, TDS, Hardness', status: 'Blind to PFAS & MP', warning: true },
-  { step: '05', label: 'SURVEILLANCE VOID', sub: 'Zero Measurement or Record', status: 'Critical Blind Spot', blindSpot: true },
-  { step: '06', label: 'No Action', sub: 'Undetected Long-Term Exposure', status: 'Unmitigated Risk', alert: true },
-];
-
-const PROBLEM_CARDS = [
-  {
-    num: '01',
-    title: 'Invisible at Trace ppt Concentrations',
-    description: 'PFAS "forever chemicals" exert chronic endocrine and immunotoxic risks at parts-per-trillion (ppt) levels. Conventional field colorimeters or chemical test strips cannot achieve sub-nanogram analytical sensitivity.',
-    highlight: 'Sensitivity Gap (< ppt)',
-    icon: EyeOff
-  },
-  {
-    num: '02',
-    title: 'No Statutory Indian Limit Yet',
-    description: "IS 10500:2012 (India's national drinking water specification) contains no regulatory limit for PFAS. The Central Pollution Control Board (CPCB) reported to the National Green Tribunal that the Bureau of Indian Standards (BIS) has initiated revisions to address these substances.",
-    highlight: 'Standard Revision Underway',
-    source: 'CPCB reply in NGT OA 548/2024',
-    icon: Scale
-  },
-  {
-    num: '03',
-    title: 'Documented Presence in Indian Water',
-    description: 'An IIT Madras investigation (published April 2024) uncovered PFAS chemicals in major Chennai surface lakes serving as municipal drinking-water reservoirs, prompting suo-motu NGT action under OA 548/2024.',
-    highlight: 'Surface Water Evidence',
-    source: 'NGT OA 548/2024',
-    icon: Waves
-  },
-  {
-    num: '04',
-    title: 'High-Cost Central Laboratory Dependence',
-    description: 'Quantification currently mandates central laboratory access to Liquid Chromatography–Tandem Mass Spectrometry (LC-MS/MS) and µ-FTIR spectroscopy. These demand cold-chain logistics, certified analysts, and weeks of reporting delay.',
-    highlight: 'Capex & Turnaround Latency',
-    icon: Building2
-  },
-  {
-    num: '05',
-    title: 'Routine Field Kits Lack Transducers',
-    description: 'Over 24.8 lakh women across India have been trained under the Jal Jeevan Mission with chemical Field Test Kits (FTKs). However, these kits only test routine chemical parameters (nitrates, fluorides, hardness) and cannot screen for synthetic organics.',
-    highlight: '24.8L FTK Users Equipped with Routine Tools',
-    icon: TestTube2
-  },
-  {
-    num: '06',
-    title: 'Absence of Source-Level Digital Trail',
-    description: 'No digital provenance or geolocated time-series data exists for emerging contaminants in rural water sources. Without tamper-evident telemetry, district engineers lack early triage signals to justify targeted laboratory testing.',
-    highlight: 'Zero Temporal Surveillance',
-    icon: DatabaseZap
-  }
-];
+import { SourceCaption } from '../ui/SimulatedTag';
 
 export default function ProblemSection() {
+  const problems = [
+    {
+      num: '01',
+      title: 'Invisible at low levels',
+      desc: "PFAS matter at parts-per-trillion levels; conventional colour or turbidity test strips simply cannot detect them."
+    },
+    {
+      num: '02',
+      title: 'No Indian limit yet',
+      desc: "IS 10500:2012 currently has no PFAS limit; the Bureau of Indian Standards has formally decided to revise it.",
+      source: "CPCB reply, NGT OA 548/2024"
+    },
+    {
+      num: '03',
+      title: 'Already in Indian water',
+      desc: "An IIT Madras study (2024) revealed PFAS contamination in Chennai lakes directly utilised for drinking water supply.",
+      source: "NGT OA 548/2024"
+    },
+    {
+      num: '04',
+      title: 'Lab-only testing bottleneck',
+      desc: "High-resolution LC-MS/MS and µ-FTIR/Raman demand central facilities, trained chemists, ~₹8,000 per sample, and days of transit."
+    },
+    {
+      num: '05',
+      title: "Field kits can't help",
+      desc: "Today's village chemical Field Test Kits (FTKs) cover routine parameters like pH, TDS, fluoride, and arsenic only."
+    },
+    {
+      num: '06',
+      title: 'No digital surveillance trail',
+      desc: "Zero source-level electronic records exist for emerging contaminants in rural habitations to trigger preventative public health action."
+    }
+  ];
+
   return (
-    <section id="problem" className="py-28 relative tech-grid border-t border-slate-800/80">
-      <div className="container-max">
+    <section
+      id="problem"
+      style={{
+        backgroundColor: 'var(--color-ink)',
+        color: 'var(--color-paper)',
+        padding: '5rem 1.5rem',
+        borderBottom: '2px solid var(--color-ink)'
+      }}
+    >
+      <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         
-        <SectionHeader
-          number="01"
-          category="THE SURVEILLANCE GAP"
-          title="THE CONTAMINANTS NOBODY TESTS FOR"
-          subtitle="PFAS 'forever chemicals' and microplastics can currently only be quantified in multi-crore central laboratories. As a result, over 99% of rural drinking-water sources are never tested for them."
-          accent="cyan"
-        />
-
-        {/* Source-to-Tap Journey Pipeline */}
-        <div className="mb-16 p-6 sm:p-8 rounded-2xl bg-slate-950/80 border border-slate-800">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-6 border-b border-slate-800/80 gap-2">
-            <span className="font-mono text-xs uppercase tracking-wider text-slate-400 font-bold">
-              EXISTING RURAL SURVEILLANCE PARADIGM // BREAKDOWN AT POINT OF CONSUMPTION
-            </span>
-            <span className="font-mono text-xs text-rose-400 font-semibold flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-              CRITICAL MONITORING FAILURE AT VILLAGE TAP
-            </span>
+        {/* Editorial Magazine Spread Header */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '2.5rem', alignItems: 'end', marginBottom: '3.5rem' }} className="problem-head-grid">
+          <div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: 'var(--color-nile-coral)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem', fontWeight: 700 }}>
+              01 · The Rural Blind Spot
+            </div>
+            <h2
+              style={{
+                fontFamily: 'var(--font-serif)',
+                fontSize: 'clamp(2.4rem, 4.5vw, 4rem)',
+                fontWeight: 900,
+                color: 'var(--color-paper)',
+                lineHeight: 1.1
+              }}
+            >
+              The contaminants nobody tests for.
+            </h2>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3.5">
-            {JOURNEY_STAGES.map((item, idx) => (
-              <div 
-                key={idx}
-                className={`p-4 rounded-xl border flex flex-col justify-between transition-all ${
-                  item.blindSpot
-                    ? 'bg-rose-950/40 border-rose-500/70 shadow-[0_0_24px_rgba(244,63,94,0.25)]'
-                    : item.warning
-                    ? 'bg-amber-950/20 border-amber-500/40 text-amber-300'
-                    : item.alert
-                    ? 'bg-rose-950/20 border-rose-500/30 text-rose-300'
-                    : 'bg-slate-900/60 border-slate-800 text-slate-300'
-                }`}
-              >
-                <div>
-                  <div className="flex items-center justify-between font-mono text-[11px] text-slate-500 mb-2">
-                    <span>STAGE {item.step}</span>
-                    {idx < JOURNEY_STAGES.length - 1 && (
-                      <span className="hidden lg:inline text-slate-600">→</span>
-                    )}
-                  </div>
-
-                  <h3 className={`font-heading font-bold text-sm tracking-tight ${
-                    item.blindSpot ? 'text-rose-200 text-base font-extrabold' : 'text-white'
-                  }`}>
-                    {item.label}
-                  </h3>
-
-                  <p className="text-xs text-slate-400 mt-1 leading-relaxed font-sans">
-                    {item.sub}
-                  </p>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-slate-800/80 font-mono text-[10px]">
-                  <span className={`px-2 py-0.5 rounded font-semibold inline-block ${
-                    item.blindSpot
-                      ? 'bg-rose-500 text-white'
-                      : item.warning
-                      ? 'bg-amber-950 text-amber-300 border border-amber-500/40'
-                      : item.alert
-                      ? 'bg-rose-950 text-rose-300 border border-rose-500/40'
-                      : 'bg-slate-800 text-slate-400'
-                  }`}>
-                    {item.status}
-                  </span>
-                </div>
-              </div>
-            ))}
+          <div>
+            <p
+              style={{
+                fontSize: 'clamp(1.1rem, 1.3vw, 1.25rem)',
+                lineHeight: 1.6,
+                color: '#CDEFF2',
+                maxWidth: '560px'
+              }}
+            >
+              PFAS &ldquo;forever chemicals&rdquo; and microplastics can only be measured today in well-equipped central laboratories. As a result, <strong>over 15 crore rural tap connections</strong> and millions of groundwater borewells are never screened for them.
+            </p>
           </div>
         </div>
 
-        {/* Six Investigated Problem Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {PROBLEM_CARDS.map((card, idx) => {
-            const Icon = card.icon;
-            return (
-              <GlassPanel key={idx} className="flex flex-col justify-between hover:border-slate-700">
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="font-mono text-xs font-bold text-sky-400 px-2.5 py-1 rounded bg-sky-950/50 border border-sky-500/30">
-                      POINT {card.num}
-                    </span>
-                    <div className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400">
-                      <Icon className="w-4 h-4" />
-                    </div>
-                  </div>
+        {/* Horizontal Illustrated Hand-Inked Journey Strip */}
+        <div
+          style={{
+            backgroundColor: '#1F315A',
+            border: '2px dashed rgba(205, 239, 242, 0.3)',
+            borderRadius: '12px',
+            padding: '1.5rem 1rem',
+            marginBottom: '4rem',
+            overflowX: 'auto'
+          }}
+        >
+          <div style={{ minWidth: '760px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
+            
+            {/* Step 1: Handpump */}
+            <div style={{ textAlign: 'center', width: '130px' }}>
+              <div style={{ width: '44px', height: '44px', margin: '0 auto 0.5rem', borderRadius: '50%', background: 'var(--color-river-teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid var(--color-paper)' }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>
+              </div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', fontWeight: 700, color: '#FFFFFF' }}>Handpump / Well</div>
+              <div style={{ fontSize: '0.72rem', color: '#CDEFF2', opacity: 0.8 }}>Deep aquifer source</div>
+            </div>
 
-                  <h3 className="font-heading text-lg font-bold text-white mb-2 leading-snug">
-                    {card.title}
-                  </h3>
+            <div style={{ flex: 1, height: '2px', background: 'rgba(205, 239, 242, 0.4)', position: 'relative' }}>
+              <span style={{ position: 'absolute', top: '-8px', left: '50%', transform: 'translateX(-50%)', color: '#CDEFF2', fontSize: '10px' }}>➔</span>
+            </div>
 
-                  <p className="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4 font-sans font-normal">
-                    {card.description}
-                  </p>
-                </div>
+            {/* Step 2: Supply Scheme */}
+            <div style={{ textAlign: 'center', width: '130px' }}>
+              <div style={{ width: '44px', height: '44px', margin: '0 auto 0.5rem', borderRadius: '50%', background: 'var(--color-river-teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid var(--color-paper)' }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path d="M3 21h18M5 21V7l7-4 7 4v14" /></svg>
+              </div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', fontWeight: 700, color: '#FFFFFF' }}>OHT / Scheme</div>
+              <div style={{ fontSize: '0.72rem', color: '#CDEFF2', opacity: 0.8 }}>Chlorinated water</div>
+            </div>
 
-                <div>
-                  <div className="inline-block px-2.5 py-1 rounded bg-slate-900/90 border border-slate-800 text-slate-400 font-mono text-[11px] mb-2">
-                    {card.highlight}
-                  </div>
+            <div style={{ flex: 1, height: '2px', background: 'rgba(205, 239, 242, 0.4)', position: 'relative' }}>
+              <span style={{ position: 'absolute', top: '-8px', left: '50%', transform: 'translateX(-50%)', color: '#CDEFF2', fontSize: '10px' }}>➔</span>
+            </div>
 
-                  {card.source && (
-                    <div className="text-[11px] font-mono text-sky-400/90 pt-2.5 border-t border-slate-800 flex items-center gap-1.5">
-                      <span className="text-slate-500">Source:</span>
-                      <span className="font-medium">{card.source}</span>
-                    </div>
-                  )}
-                </div>
-              </GlassPanel>
-            );
-          })}
+            {/* Step 3: Village Tap */}
+            <div style={{ textAlign: 'center', width: '130px' }}>
+              <div style={{ width: '44px', height: '44px', margin: '0 auto 0.5rem', borderRadius: '50%', background: 'var(--color-river-teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid var(--color-paper)' }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z" /></svg>
+              </div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', fontWeight: 700, color: '#FFFFFF' }}>Village Tap</div>
+              <div style={{ fontSize: '0.72rem', color: '#CDEFF2', opacity: 0.8 }}>Daily consumption</div>
+            </div>
+
+            <div style={{ flex: 1, height: '2px', background: 'rgba(205, 239, 242, 0.4)', position: 'relative' }}>
+              <span style={{ position: 'absolute', top: '-8px', left: '50%', transform: 'translateX(-50%)', color: 'var(--color-signal-yellow)', fontSize: '10px' }}>➔</span>
+            </div>
+
+            {/* Step 4: Today's FTK (?) */}
+            <div style={{ textAlign: 'center', width: '150px' }}>
+              <div style={{ width: '48px', height: '48px', margin: '0 auto 0.5rem', borderRadius: '50%', background: 'var(--color-signal-yellow)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '3px solid var(--color-ink)' }}>
+                <span style={{ fontFamily: 'var(--font-serif)', fontSize: '1.6rem', fontWeight: 900, color: 'var(--color-ink)' }}>?</span>
+              </div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', fontWeight: 800, color: 'var(--color-signal-yellow)' }}>Today's FTK</div>
+              <div style={{ fontSize: '0.72rem', color: '#FFE1D6' }}>Tests pH, Fe, As only</div>
+            </div>
+
+            <div style={{ flex: 1, height: '2px', background: 'rgba(205, 239, 242, 0.4)', position: 'relative' }}>
+              <span style={{ position: 'absolute', top: '-8px', left: '50%', transform: 'translateX(-50%)', color: 'var(--color-alert-red)', fontSize: '10px' }}>➔</span>
+            </div>
+
+            {/* Step 5: Blind Spot */}
+            <div style={{ textAlign: 'center', width: '130px' }}>
+              <div style={{ width: '44px', height: '44px', margin: '0 auto 0.5rem', borderRadius: '50%', background: 'var(--color-alert-red)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid var(--color-paper)' }}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5"><path d="M18 6L6 18M6 6l12 12" /></svg>
+              </div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', fontWeight: 700, color: 'var(--color-alert-red)' }}>Zero Record</div>
+              <div style={{ fontSize: '0.72rem', color: '#CDEFF2', opacity: 0.8 }}>No action possible</div>
+            </div>
+
+          </div>
+        </div>
+
+        {/* 6 Problems as Numbered List (NOT Generic Cards) */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3rem 4rem', marginBottom: '4rem' }}>
+          {problems.map((p) => (
+            <div key={p.num} style={{ borderTop: '1px solid rgba(205, 239, 242, 0.25)', paddingTop: '1.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.8rem', marginBottom: '0.6rem' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.8rem', fontWeight: 800, color: 'var(--color-nile-coral)' }}>
+                  {p.num}
+                </span>
+                <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.35rem', color: 'var(--color-paper)' }}>
+                  {p.title}
+                </h3>
+              </div>
+              <p style={{ color: 'rgba(251, 246, 236, 0.82)', fontSize: '0.96rem', lineHeight: 1.6 }}>
+                {p.desc}
+              </p>
+              {p.source && <SourceCaption source={p.source} />}
+            </div>
+          ))}
+        </div>
+
+        {/* Editorial Pull Quote */}
+        <div
+          style={{
+            borderLeft: '4px solid var(--color-signal-yellow)',
+            paddingLeft: '1.75rem',
+            maxWidth: '850px',
+            margin: '0 auto'
+          }}
+        >
+          <blockquote
+            style={{
+              fontFamily: 'var(--font-serif)',
+              fontStyle: 'italic',
+              fontSize: 'clamp(1.4rem, 2.8vw, 2.2rem)',
+              color: 'var(--color-signal-yellow)',
+              lineHeight: 1.25,
+              marginBottom: '0.5rem'
+            }}
+          >
+            &ldquo;If you can&rsquo;t measure it in the village, you can&rsquo;t act on it in time.&rdquo;
+          </blockquote>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: '#CDEFF2', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            — National Jal Jeevan Mission Field Triage Imperative
+          </p>
         </div>
 
       </div>
+
+      <style>{`
+        @media (min-width: 850px) {
+          .problem-head-grid {
+            grid-template-columns: 1.2fr 0.8fr !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

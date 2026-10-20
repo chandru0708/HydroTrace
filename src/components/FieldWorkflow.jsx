@@ -1,221 +1,241 @@
 import React, { useState } from 'react';
-import SectionHeader from '../ui/SectionHeader';
-import GlassPanel from '../ui/GlassPanel';
-import { Clock, CheckCircle2, ChevronRight, Droplet, ArrowRight, ShieldCheck } from 'lucide-react';
-
-const WORKFLOW_STEPS = [
-  {
-    num: '01',
-    name: 'COLLECT',
-    time: '2 min',
-    desc: '250 mL water collected in a clean polypropylene bottle directly from tap or borewell. Zero PTFE tape or seals.',
-    oledDisplay: ['JAL-DRISHTI v1.2', 'SAMPLE: 250 mL', 'STATUS: READY', 'PRESS PUSH BAR']
-  },
-  {
-    num: '02',
-    name: 'PUSH',
-    time: '10–15 min',
-    desc: 'Spring syringe drives sample through 25 mm glass-fibre filter then WAX cartridge in series at a steady, slow flow rate.',
-    oledDisplay: ['SERIES FLOWING', 'VOL: 250 mL PASS', 'GF -> WAX TRAP', 'FLOW: 20 mL/min']
-  },
-  {
-    num: '03',
-    name: 'BLANK SCAN',
-    time: '1 min',
-    desc: 'Insert unstained filter into light-tight chamber. 470 nm blue LED sweeps to measure natural background scatter (I_blank).',
-    oledDisplay: ['OPTICS: DARK-BOX', 'BLANK CALIBRATION', 'I_blank: 142 nA', 'SCAN: COMPLETE ✓']
-  },
-  {
-    num: '04',
-    name: 'STAIN',
-    time: '10 min',
-    desc: 'Break sealed ampoule and add 3 drops of Nile Red in ethanol onto filter disc. Start 10-minute incubation timer.',
-    oledDisplay: ['NILE RED APPLIED', 'WAIT: 10:00 MIN', 'ELUTE IN PARALLEL', 'TIMER RUNNING...']
-  },
-  {
-    num: '05',
-    name: 'ELUTE (PARALLEL)',
-    time: '3 min',
-    desc: 'While filter stains, inject 0.5 mL ammoniated methanol through WAX to elute concentrated PFAS into a small collection vial.',
-    oledDisplay: ['WAX ELUTION...', 'VOL: 0.5 mL MeOH', 'ENRICHMENT: ~50x', 'PARALLEL STEP']
-  },
-  {
-    num: '06',
-    name: 'DILUTE',
-    time: '2 min',
-    desc: 'Dilute 0.5 mL eluate 1:4 into ~2.5 mL phosphate buffer containing 5 mM ferri/ferrocyanide redox probe.',
-    oledDisplay: ['BUFFER DILUTION', '1:4 VOL RATIO', 'PROBE: [Fe(CN)6]', 'MIXING COMPLETE']
-  },
-  {
-    num: '07',
-    name: 'STAINED SCAN',
-    time: '2 min',
-    desc: 'Re-insert stained filter into optics chamber. Read I_stained photodiode value and capture 25 KB macro audit photo.',
-    oledDisplay: ['MFI SCAN...', 'I_stain: 588 nA', 'MFI: 446 nA (LOW)', 'PHOTO SAVED ✓']
-  },
-  {
-    num: '08',
-    name: 'PFAS SCAN',
-    time: '6–8 min',
-    desc: 'Dispense 50 µL onto MIP/NIP strip, incubate 5 min, then run ~60 s DPV scan across WE1 and WE2 to determine ΔI drop.',
-    oledDisplay: ['DPV SCAN: WE1/WE2', 'RANGE: -0.1->+0.5V', 'S_net: COMPUTED', 'PFAS: DETECTED']
-  },
-  {
-    num: '09',
-    name: 'REPORT',
-    time: '1 min',
-    desc: 'OLED displays triage verdict, traffic LEDs illuminate, and signed 12-char HMAC code is generated for SMS dispatch.',
-    oledDisplay: ['CODE: 7H4K-9M2X', 'PFAS: AMBER (MON)', 'MP:   LOW MFI', 'CTR:  #0417  HMAC✓']
-  }
-];
 
 export default function FieldWorkflow() {
-  const [activeStepIdx, setActiveStepIdx] = useState(0);
-  const activeStep = WORKFLOW_STEPS[activeStepIdx];
+  const [activeStep, setActiveStep] = useState(0);
+
+  const workflowSteps = [
+    {
+      num: '01',
+      name: 'Sample Collection',
+      time: '0 min',
+      duration: '2 min',
+      desc: 'Fill 250 mL directly from the handpump spout or tap into a certified PTFE-free polypropylene bottle.',
+      oled: 'STEP 1/9: SAMPLE\nREADY: 250 mL\nVESSEL: PP CLEAN'
+    },
+    {
+      num: '02',
+      name: 'Manual Syringe Push',
+      time: '2 min',
+      duration: '10–15 min',
+      desc: 'Lock syringe to 25 mm filter holder & WAX cartridge. Spring plunger applies constant pressure.',
+      oled: 'STEP 2/9: FLOW\nGF FILTER: LOADED\nWAX: CAPTURING'
+    },
+    {
+      num: '03',
+      name: 'Microplastic Blank Scan',
+      time: '15 min',
+      duration: '1 min',
+      desc: 'Insert filter disc into dark chamber. 470 nm excitation measures unstained disc baseline (I_blank).',
+      oled: 'STEP 3/9: BLANK\n470nm BLUE LED ON\nI_BLANK: 142 nA'
+    },
+    {
+      num: '04',
+      name: 'Nile Red Staining',
+      time: '16 min',
+      duration: '10 min',
+      desc: 'Dispense 3 drops of Nile Red in ethanol onto disc. Internal hardware timer counts down 10-minute wait.',
+      oled: 'STEP 4/9: STAINING\nTIMER: 10:00\nINCUBATING...'
+    },
+    {
+      num: '05',
+      name: 'Parallel PFAS Elution',
+      time: '18 min',
+      duration: '5 min',
+      desc: 'Performed concurrently during the stain incubation! Flush WAX cartridge with 0.5 mL ammoniated methanol.',
+      oled: 'STEP 5/9: ELUTION\nWAX FLUSH: 0.5 mL\nAMMONIATED MEOH'
+    },
+    {
+      num: '06',
+      name: 'Buffer Dilution',
+      time: '23 min',
+      duration: '3 min',
+      desc: 'Dilute the 0.5 mL eluate 1:4 with 2.0 mL phosphate buffer containing 5 mM ferri/ferrocyanide probe.',
+      oled: 'STEP 6/9: BUFFER\nDILUTION: 1:4\nPROBE: [Fe(CN)6]'
+    },
+    {
+      num: '07',
+      name: 'Stained Optical Scan & Photo',
+      time: '26 min',
+      duration: '2 min',
+      desc: 'Read fluorescence I_stained; calculate MFI. ESP32-S3 macro lens fires blue flash and captures audit photo.',
+      oled: 'STEP 7/9: MP SCAN\nI_STAIN: 820 nA\nPHOTO: CAPTURED'
+    },
+    {
+      num: '08',
+      name: 'Electrochemical DPV Scan',
+      time: '28 min',
+      duration: '6 min',
+      desc: 'Pipette droplet onto MIP/NIP strip. 5-min cavity incubation followed by sequential 60-s DPV sweeps.',
+      oled: 'STEP 8/9: DPV SCAN\nSWEEP: -0.1 to +0.5V\nS_NET: COMPUTING'
+    },
+    {
+      num: '09',
+      name: 'Cryptographic Signing & Report',
+      time: '34 min',
+      duration: '1 min',
+      desc: 'Tiers locked; 60-bit payload signed by HMAC-SHA256. 12-char Crockford code generated for keypad SMS.',
+      oled: 'STEP 9/9: SIGNED\nTIER: AMBER / GREEN\nCODE: 7H4K-9M2X-8B3Q'
+    }
+  ];
 
   return (
-    <section id="workflow" className="py-28 relative tech-grid bg-[#040814] border-t border-slate-800/80">
-      <div className="container-max">
+    <section
+      id="workflow"
+      style={{
+        backgroundColor: 'var(--color-river-teal)',
+        color: 'var(--color-paper)',
+        padding: '5.5rem 1.5rem',
+        borderBottom: '2px solid var(--color-ink)'
+      }}
+    >
+      <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         
-        <SectionHeader
-          number="07"
-          category="FIELD PROTOCOL"
-          title="FROM A VILLAGE TAP TO A SIGNED RECORD"
-          subtitle="A rugged 9-step workflow executable by village water testers in 30–40 minutes. Nile Red incubation and WAX elution run in parallel to maximize throughput."
-          accent="cyan"
-        />
-
-        {/* Total Time Callout Banner */}
-        <div className="mb-10 p-5 rounded-2xl bg-slate-950 border border-slate-800 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <Clock className="w-5 h-5 text-sky-400" />
-            <div>
-              <span className="font-heading font-bold text-white text-base">TOTAL PROTOCOL DURATION:</span>
-              <span className="font-mono text-sky-300 font-extrabold text-lg ml-2">≈ 30–40 MINUTES</span>
-            </div>
+        {/* Header */}
+        <div style={{ maxWidth: '780px', marginBottom: '3.5rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: 'var(--color-signal-yellow)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem', fontWeight: 700 }}>
+            07 · Protocol Efficiency
           </div>
-          <div className="font-mono text-xs text-slate-400">
-            *Nile Red staining wait (10 min) and WAX elution run concurrently
-          </div>
+          <h2
+            style={{
+              fontFamily: 'var(--font-serif)',
+              fontSize: 'clamp(2.3rem, 4.4vw, 4rem)',
+              fontWeight: 900,
+              lineHeight: 1.1,
+              marginBottom: '1rem'
+            }}
+          >
+            From a village tap to a signed record in ~35 minutes.
+          </h2>
+          <p style={{ fontSize: 'clamp(1.05rem, 1.3vw, 1.25rem)', color: '#CDEFF2', lineHeight: 1.55 }}>
+            By running the PFAS elution during the 10-minute microplastic incubation window, both assays finish in one swift field session.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
-          {/* Steps List (7 Cols) */}
-          <div className="lg:col-span-7 space-y-3">
-            {WORKFLOW_STEPS.map((step, idx) => {
-              const isSelected = activeStepIdx === idx;
-              return (
-                <div
-                  key={idx}
-                  onClick={() => setActiveStepIdx(idx)}
-                  className={`p-4 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
-                    isSelected
-                      ? 'bg-sky-950/50 border-sky-400/80 shadow-[0_4px_20px_rgba(56,189,248,0.15)]'
-                      : 'bg-slate-900/60 border-slate-800 hover:border-slate-700'
-                  }`}
-                >
-                  <div className="flex items-center gap-3.5">
-                    <span className={`font-mono text-xs font-bold px-2 py-0.5 rounded ${
-                      isSelected ? 'bg-cyan-400 text-slate-950' : 'bg-slate-800 text-slate-400'
-                    }`}>
-                      {step.num}
-                    </span>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className={`font-heading font-bold text-sm ${isSelected ? 'text-white' : 'text-slate-200'}`}>
-                          {step.name}
-                        </span>
-                        <span className="font-mono text-[11px] text-cyan-400 font-medium">({step.time})</span>
-                      </div>
-                      <p className="text-slate-400 text-xs font-sans mt-0.5 max-w-md line-clamp-1">
-                        {step.desc}
-                      </p>
-                    </div>
-                  </div>
+        {/* Interactive Step Navigator */}
+        <div style={{ display: 'flex', gap: '0.6rem', overflowX: 'auto', paddingBottom: '1rem', marginBottom: '2.5rem' }}>
+          {workflowSteps.map((step, idx) => (
+            <button
+              key={step.num}
+              onClick={() => setActiveStep(idx)}
+              style={{
+                backgroundColor: activeStep === idx ? 'var(--color-signal-yellow)' : '#123956',
+                color: activeStep === idx ? 'var(--color-ink)' : '#FFFFFF',
+                border: '2px solid var(--color-ink)',
+                borderRadius: '8px',
+                padding: '0.6rem 0.9rem',
+                cursor: 'pointer',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                whiteSpace: 'nowrap',
+                boxShadow: activeStep === idx ? '3px 3px 0px var(--color-ink)' : 'none',
+                transition: 'all 0.1s ease'
+              }}
+            >
+              {step.num} · {step.name}
+            </button>
+          ))}
+        </div>
 
-                  <ChevronRight className={`w-4 h-4 shrink-0 transition-transform ${isSelected ? 'text-cyan-400 translate-x-1' : 'text-slate-600'}`} />
-                </div>
-              );
-            })}
+        {/* Selected Step Spotlight: Clock + Details + Synchronized OLED Screen */}
+        <div
+          style={{
+            backgroundColor: 'var(--color-paper)',
+            color: 'var(--color-ink)',
+            borderRadius: '16px',
+            border: '3px solid var(--color-ink)',
+            padding: '2.5rem',
+            boxShadow: '6px 6px 0px var(--color-ink)',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '2.5rem',
+            alignItems: 'center'
+          }}
+        >
+          {/* Left: Step Details & Duration */}
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.4rem', fontWeight: 900, color: 'var(--color-river-teal)' }}>
+                STEP {workflowSteps[activeStep].num}
+              </span>
+              <span style={{ background: 'var(--color-signal-yellow)', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', padding: '0.2rem 0.5rem', borderRadius: '4px', fontWeight: 800 }}>
+                Elapsed: T+{workflowSteps[activeStep].time} ({workflowSteps[activeStep].duration})
+              </span>
+            </div>
+
+            <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '2rem', marginBottom: '0.85rem' }}>
+              {workflowSteps[activeStep].name}
+            </h3>
+
+            <p style={{ fontSize: '1.05rem', color: '#2B2B2B', lineHeight: 1.6, marginBottom: '1.5rem' }}>
+              {workflowSteps[activeStep].desc}
+            </p>
+
+            <div style={{ display: 'flex', gap: '0.75rem' }}>
+              <button
+                onClick={() => setActiveStep(prev => (prev > 0 ? prev - 1 : workflowSteps.length - 1))}
+                className="btn-press btn-paper"
+                style={{ padding: '0.45rem 0.9rem', fontSize: '0.85rem' }}
+              >
+                ◀ Previous Step
+              </button>
+              <button
+                onClick={() => setActiveStep(prev => (prev < workflowSteps.length - 1 ? prev + 1 : 0))}
+                className="btn-press btn-yellow"
+                style={{ padding: '0.45rem 0.9rem', fontSize: '0.85rem' }}
+              >
+                Next Step ▶
+              </button>
+            </div>
           </div>
 
-          {/* Synchronized OLED Mockup & Active Step Details (5 Cols) */}
-          <div className="lg:col-span-5 sticky top-24">
-            <GlassPanel variant="cyan" className="space-y-4 border-cyan-500/30">
-              <div className="flex items-center justify-between border-b border-cyan-500/20 pb-3">
-                <span className="font-mono text-xs font-bold text-cyan-400 uppercase">
-                  ACTIVE HARDWARE SIMULATION
+          {/* Right: Simulated Synchronized Reader Screen for this Step */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div
+              style={{
+                width: '280px',
+                backgroundColor: '#14213D',
+                borderRadius: '12px',
+                border: '3px solid #0E9AA7',
+                padding: '1.25rem',
+                boxShadow: '4px 4px 0px var(--color-ink)'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: '#0E9AA7', fontWeight: 'bold' }}>
+                  0.96" OLED SCREEN
                 </span>
-                <span className="font-mono text-xs text-slate-400">
-                  STEP {activeStep.num} OF 09
-                </span>
+                <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#2BA84A' }} />
               </div>
 
-              {/* Realistic 0.96" OLED Display Mockup */}
-              <div className="p-4 rounded-xl bg-slate-950 border-2 border-slate-800 shadow-inner">
-                <div className="flex items-center justify-between text-[10px] font-mono text-slate-600 mb-2">
-                  <span>SSD1306 128x64 OLED</span>
-                  <span>I2C ADDR: 0x3C</span>
-                </div>
-
-                {/* OLED Blue / Yellow Screen Area */}
-                <div className="p-4 rounded-lg bg-black border border-cyan-500/40 font-mono text-xs text-cyan-300 space-y-1.5 shadow-[0_0_20px_rgba(34,211,238,0.2)]">
-                  <div className="text-[10px] text-yellow-300 font-bold border-b border-yellow-500/30 pb-1 flex justify-between">
-                    <span>JAL-DRISHTI // FTK</span>
-                    <span>BAT: 94%</span>
-                  </div>
-                  {activeStep.oledDisplay.map((line, lIdx) => (
-                    <div key={lIdx} className="text-cyan-200 font-semibold tracking-wide">
-                      {line}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Reader Traffic Light LEDs */}
-                <div className="flex items-center justify-center gap-6 mt-4 pt-3 border-t border-slate-900">
-                  <div className="flex flex-col items-center gap-1">
-                    <span className={`w-3.5 h-3.5 rounded-full ${activeStepIdx === 8 ? 'bg-emerald-500/30' : 'bg-emerald-500/20'}`} />
-                    <span className="text-[9px] font-mono text-slate-500">GRN</span>
-                  </div>
-                  <div className="flex flex-col items-center gap-1">
-                    <span className={`w-3.5 h-3.5 rounded-full ${activeStepIdx === 8 ? 'bg-amber-400 shadow-[0_0_10px_#f59e0b] animate-pulse' : 'bg-amber-500/20'}`} />
-                    <span className="text-[9px] font-mono text-slate-500">AMB</span>
-                  </div>
-                  <div className="flex flex-col items-center gap-1">
-                    <span className="w-3.5 h-3.5 rounded-full bg-rose-500/20" />
-                    <span className="text-[9px] font-mono text-slate-500">RED</span>
-                  </div>
-                </div>
+              {/* OLED Blue Monospace Terminal Display */}
+              <div
+                style={{
+                  backgroundColor: '#0B132B',
+                  border: '1.5px solid #0E9AA7',
+                  borderRadius: '6px',
+                  padding: '1rem',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.82rem',
+                  color: '#CDEFF2',
+                  lineHeight: 1.5,
+                  minHeight: '110px',
+                  whiteSpace: 'pre-line'
+                }}
+              >
+                {workflowSteps[activeStep].oled}
               </div>
 
-              {/* Step Expanded Instructions */}
-              <div className="p-3 rounded-lg bg-[#030612] border border-slate-800 text-xs font-sans text-slate-300 space-y-2">
-                <div className="font-mono text-cyan-400 font-bold text-xs uppercase">
-                  PROCEDURAL DIRECTIVE:
-                </div>
-                <p className="leading-relaxed">
-                  {activeStep.desc}
-                </p>
+              <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '0.75rem' }}>
+                <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#2BA84A' }} />
+                <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#F39C12' }} />
+                <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#D7263D' }} />
               </div>
+            </div>
 
-              <div className="flex justify-between items-center pt-2">
-                <button
-                  disabled={activeStepIdx === 0}
-                  onClick={() => setActiveStepIdx((prev) => Math.max(0, prev - 1))}
-                  className="px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-xs font-mono text-slate-300 disabled:opacity-40 cursor-pointer"
-                >
-                  ← PREV STEP
-                </button>
-                <button
-                  disabled={activeStepIdx === WORKFLOW_STEPS.length - 1}
-                  onClick={() => setActiveStepIdx((prev) => Math.min(WORKFLOW_STEPS.length - 1, prev + 1))}
-                  className="px-3 py-1.5 rounded bg-cyan-950 border border-cyan-500/40 text-xs font-mono text-cyan-300 disabled:opacity-40 cursor-pointer font-bold"
-                >
-                  NEXT STEP →
-                </button>
-              </div>
-            </GlassPanel>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--color-ink)', marginTop: '0.5rem', opacity: 0.7 }}>
+              On-device firmware screen at this step
+            </span>
           </div>
 
         </div>

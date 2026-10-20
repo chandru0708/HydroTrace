@@ -1,338 +1,292 @@
-import React, { useState, useEffect } from 'react';
-import { ArrowRight, Play, ShieldCheck, Cpu, Waves, Sparkles, AlertCircle } from 'lucide-react';
-import GlassPanel from '../ui/GlassPanel';
-import TelemetryChip from '../ui/TelemetryChip';
-import SimulatedBadge from '../ui/SimulatedBadge';
+import React from 'react';
+import Sticker from '../ui/Sticker';
+import PressButton from '../ui/PressButton';
+import MarginNote from '../ui/MarginNote';
+import { SimulatedTag } from '../ui/SimulatedTag';
 
 export default function Hero() {
-  const [activeTab, setActiveTab] = useState('diagram');
-  const [animStep, setAnimStep] = useState(0);
-
-  // Cycle through animation steps for the flow
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setAnimStep((prev) => (prev + 1) % 5);
-    }, 2400);
-    return () => clearInterval(timer);
-  }, []);
-
-  const scrollTo = (id) => {
-    const el = document.getElementById(id);
-    if (el) {
-      const navOffset = 80;
-      const elementPosition = el.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - navOffset;
-      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-    }
-  };
-
   return (
-    <section className="relative pt-28 pb-20 md:pt-36 md:pb-28 overflow-hidden tech-grid">
-      {/* Background radial glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-1/3 right-10 w-[400px] h-[400px] bg-purple-600/10 rounded-full blur-[100px] pointer-events-none" />
+    <section
+      style={{
+        position: 'relative',
+        backgroundColor: 'var(--color-paper)',
+        overflow: 'hidden',
+        borderBottom: '2px solid var(--color-ink)',
+        padding: '3.5rem 1.5rem 4.5rem'
+      }}
+    >
+      {/* Large Solid Flat Teal Organic Shape on the Right (No gradient) */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '-10%',
+          right: '-5%',
+          width: '52%',
+          height: '120%',
+          backgroundColor: 'var(--color-river-teal)',
+          borderRadius: '42% 58% 70% 30% / 45% 45% 55% 55%',
+          zIndex: 0,
+          pointerEvents: 'none',
+          opacity: 0.95
+        }}
+        className="hero-teal-blob"
+      />
 
-      <div className="container-max relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <div style={{ maxWidth: '1280px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '3rem', alignItems: 'center' }} className="hero-grid">
           
-          {/* LEFT COLUMN: Narrative & Value Proposition */}
-          <div className="lg:col-span-6 space-y-6">
-            
-            {/* Context Badge */}
-            <div className="inline-flex flex-wrap items-center gap-2 px-3 py-1.5 rounded-lg border border-cyan-500/30 bg-cyan-950/40 text-cyan-300 font-mono text-xs shadow-[0_0_15px_rgba(34,211,238,0.15)]">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-              <span className="font-semibold">SMART INDIA HACKATHON 2026</span>
-              <span className="text-slate-500">·</span>
-              <span className="text-slate-300">PS 26252</span>
-              <span className="text-slate-500">·</span>
-              <span className="text-slate-400">MINISTRY OF JAL SHAKTI</span>
+          {/* Left Column (55%) */}
+          <div>
+            <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+              <Sticker rotate="-3deg" color="var(--color-signal-yellow)">
+                SIH 2026 · PS 26252 · Ministry of Jal Shakti
+              </Sticker>
+              <Sticker rotate="2deg" color="var(--color-sky)" textColor="var(--color-ink)">
+                Clean & Green Tech
+              </Sticker>
             </div>
 
-            {/* Main Heading */}
-            <div className="space-y-1">
-              <h1 className="font-heading text-4xl sm:text-5xl xl:text-6xl font-extrabold text-white tracking-tight leading-none uppercase">
-                SEE THE INVISIBLE.
-              </h1>
-              <h2 className="font-heading text-4xl sm:text-5xl xl:text-6xl font-extrabold tracking-tight leading-none bg-gradient-to-r from-cyan-400 via-teal-300 to-cyan-200 bg-clip-text text-transparent uppercase">
-                IN EVERY DROP.
-              </h2>
-            </div>
+            <h1
+              style={{
+                fontFamily: 'var(--font-serif)',
+                fontSize: 'clamp(2.6rem, 5.5vw, 4.8rem)',
+                fontWeight: 900,
+                color: 'var(--color-ink)',
+                lineHeight: 1.05,
+                letterSpacing: '-0.02em',
+                marginBottom: '1.5rem'
+              }}
+            >
+              Trace the <span style={{ fontStyle: 'italic', color: 'var(--color-pfas-violet)' }}>invisible</span>
+              <br />
+              in every drop.
+            </h1>
 
-            {/* Supporting Statement */}
-            <p className="text-slate-300 text-base md:text-lg leading-relaxed font-sans max-w-xl">
-              <strong className="text-white font-semibold">Jal-Drishti</strong> is a{' '}
-              <span className="text-cyan-300 font-mono font-medium">₹2,700</span> handheld field kit that screens one{' '}
-              <span className="text-white font-semibold">250 mL</span> drinking-water sample for{' '}
-              <span className="text-purple-300 font-semibold">PFAS</span> and{' '}
-              <span className="text-orange-300 font-semibold">microplastics</span> in{' '}
-              <span className="text-cyan-300 font-mono">30–40 minutes</span>, and reports a tamper-proof result by SMS from any phone. Red results go to an NABL lab for confirmation.
+            <p
+              style={{
+                fontSize: 'clamp(1.05rem, 1.4vw, 1.25rem)',
+                lineHeight: 1.55,
+                color: 'var(--color-ink)',
+                maxWidth: '540px',
+                marginBottom: '2rem',
+                fontWeight: 450
+              }}
+            >
+              HydroTrace is a <strong>≈ ₹2,700</strong> handheld kit that screens one 250 mL water sample for PFAS and microplastics in <strong>30–40 minutes</strong> — and reports a tamper-proof result by SMS from any phone. Red results go to an NABL lab for confirmation.
             </p>
 
-            {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-4 pt-2">
-              <button 
-                onClick={() => scrollTo('solution')}
-                className="btn-primary group"
-              >
-                <span>EXPLORE JAL-DRISHTI</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
-
-              <button 
-                onClick={() => scrollTo('live-demo')}
-                className="btn-secondary group"
-              >
-                <Play className="w-4 h-4 text-cyan-400 fill-cyan-400/20" />
-                <span>RUN LIVE TEST</span>
-              </button>
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
+              <PressButton href="#solution" variant="ink">
+                See how it works
+              </PressButton>
+              <PressButton href="#demo" variant="yellow">
+                Run the live test ▸
+              </PressButton>
             </div>
 
-            {/* Technical Chips Grid */}
-            <div className="pt-4 border-t border-slate-800/80">
-              <p className="font-mono text-[11px] text-slate-400 uppercase tracking-wider mb-2.5">
-                ENGINEERING ARCHITECTURE // CORE PARAMETERS
+            {/* Mono Facts Row */}
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.6rem',
+                flexWrap: 'wrap',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.82rem',
+                padding: '0.5rem 0.9rem',
+                background: 'rgba(20, 33, 61, 0.05)',
+                border: '1.5px solid rgba(20, 33, 61, 0.15)',
+                borderRadius: '6px'
+              }}
+            >
+              <span style={{ fontWeight: 700 }}>250 mL</span>
+              <span>•</span>
+              <span style={{ fontWeight: 700 }}>2 tests</span>
+              <span>•</span>
+              <span style={{ fontWeight: 700 }}>30–40 min</span>
+              <span>•</span>
+              <span style={{ fontWeight: 700 }}>₹150–200/test</span>
+              <span>•</span>
+              <span style={{ color: 'var(--color-leaf-green)', fontWeight: 700 }}>works offline</span>
+            </div>
+
+            {/* Design Target Disclaimer */}
+            <div style={{ marginTop: '0.75rem' }}>
+              <p style={{ fontSize: '0.75rem', color: 'var(--color-ink)', opacity: 0.75, fontStyle: 'italic' }}>
+                * Design targets for hardware prototype. First-tier field triage tool, requires NABL laboratory confirmation.
               </p>
-              <div className="flex flex-wrap gap-2">
-                {[
-                  { text: 'PFAS', variant: 'violet' },
-                  { text: 'MICROPLASTICS', variant: 'orange' },
-                  { text: '250 mL', variant: 'cyan' },
-                  { text: 'WAX 40–60×', variant: 'violet' },
-                  { text: 'MIP / NIP', variant: 'violet' },
-                  { text: 'DPV', variant: 'violet' },
-                  { text: 'NILE RED', variant: 'orange' },
-                  { text: 'SIGNED SMS', variant: 'cyan' },
-                  { text: 'OFFLINE-FIRST', variant: 'green' }
-                ].map((chip, idx) => (
-                  <span 
-                    key={idx} 
-                    className="font-mono text-xs px-2.5 py-1 rounded bg-slate-900/80 border border-slate-700/80 text-slate-300 hover:border-cyan-500/50 hover:text-cyan-300 transition-colors cursor-default"
-                  >
-                    {chip.text}
-                  </span>
-                ))}
-              </div>
             </div>
-
-            {/* Scientific Disclaimer Alert */}
-            <div className="p-3.5 rounded-lg border border-amber-500/30 bg-amber-950/20 flex items-start gap-3">
-              <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-              <div className="text-xs text-amber-200/90 leading-relaxed font-sans">
-                <span className="font-semibold text-amber-300 font-mono uppercase tracking-wide">
-                  Triage Tool Disclaimer:
-                </span>{' '}
-                Jal-Drishti is designed for rapid field screening, not central lab replacement. Red results require laboratory validation and NABL confirmation via LC-MS/MS.
-              </div>
-            </div>
-
           </div>
 
-          {/* RIGHT COLUMN: Interactive Hardware Flow & Live Result Panel */}
-          <div className="lg:col-span-6 space-y-4">
+          {/* Right Column (45%): Custom Flat Illustration */}
+          <div style={{ position: 'relative' }}>
+            {/* Margin Notes with hand-drawn arrows */}
+            <div style={{ position: 'absolute', top: '-15px', right: '20px', zIndex: 10 }}>
+              <MarginNote text="plastics stop here!" direction="curve-down" color="#FFFFFF" />
+            </div>
             
-            {/* The Large Futuristic Kit & Fluidic Flow Visual */}
-            <GlassPanel variant="cyan" className="overflow-hidden border-cyan-500/30">
-              <div className="flex items-center justify-between pb-3 mb-2 border-b border-cyan-500/20">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
-                  <span className="font-mono text-xs font-semibold text-cyan-300 tracking-wider">
-                    DUAL-PATH TRANSDUCTION ENGINE
-                  </span>
-                </div>
-                <div className="font-mono text-[11px] text-slate-400">
-                  STEP {animStep + 1} / 5
-                </div>
-              </div>
+            <div style={{ position: 'absolute', bottom: '85px', left: '-20px', zIndex: 10 }}>
+              <MarginNote text="PFAS sticks here" direction="right" color="var(--color-ink)" />
+            </div>
 
-              {/* Dynamic SVG Visualization of One Sample -> Two Tests */}
-              <div className="relative w-full aspect-[16/10] bg-[#030814] rounded-lg border border-slate-800/80 p-2 overflow-hidden flex items-center justify-center">
-                <svg viewBox="0 0 600 380" className="w-full h-full" fill="none">
-                  <defs>
-                    <linearGradient id="sampleGrad" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="#0284c7" />
-                      <stop offset="100%" stopColor="#22d3ee" />
-                    </linearGradient>
-                    <linearGradient id="pfasGrad" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="#8b5cf6" />
-                      <stop offset="100%" stopColor="#c084fc" />
-                    </linearGradient>
-                    <linearGradient id="mpGrad" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="#ea580c" />
-                      <stop offset="100%" stopColor="#ff7a3d" />
-                    </linearGradient>
-                    <filter id="glowCyan" x="-20%" y="-20%" width="140%" height="140%">
-                      <feGaussianBlur stdDeviation="3" result="blur" />
-                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                    </filter>
-                    <filter id="glowOrange" x="-20%" y="-20%" width="140%" height="140%">
-                      <feGaussianBlur stdDeviation="4" result="blur" />
-                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                    </filter>
-                    <filter id="glowViolet" x="-20%" y="-20%" width="140%" height="140%">
-                      <feGaussianBlur stdDeviation="3" result="blur" />
-                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                    </filter>
-                  </defs>
+            <div style={{ position: 'absolute', bottom: '-20px', right: '30px', zIndex: 10 }}>
+              <MarginNote text="tamper-proof signed code!" direction="left" color="#FFFFFF" />
+            </div>
 
-                  {/* Flow Animation Guide Line */}
-                  {/* Stage 1: Sample Inlet */}
-                  <rect x="20" y="140" width="85" height="100" rx="8" fill="#0A1628" stroke="#22d3ee" strokeWidth="1.5" />
-                  <rect x="42" y="125" width="40" height="15" rx="3" fill="#1e293b" stroke="#38bdf8" />
-                  <text x="62" y="195" fill="#38bdf8" fontSize="11" fontFamily="JetBrains Mono" textAnchor="middle" fontWeight="bold">250 mL</text>
-                  <text x="62" y="212" fill="#94a3b8" fontSize="8" fontFamily="Inter" textAnchor="middle">Drinking Water</text>
+            {/* Main Hero Illustrated Scene (SVG) */}
+            <div
+              style={{
+                background: '#FFFFFF',
+                borderRadius: '16px',
+                border: '3px solid var(--color-ink)',
+                boxShadow: '6px 6px 0px var(--color-ink)',
+                padding: '1.25rem',
+                overflow: 'hidden'
+              }}
+            >
+              <svg viewBox="0 0 480 430" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: 'auto', display: 'block' }}>
+                {/* 1. Sample Bottle Tipping (Water flows into Syringe) */}
+                <g id="sample-bottle" transform="translate(30, 20) rotate(25)">
+                  <rect x="0" y="0" width="38" height="65" rx="5" fill="#CDEFF2" stroke="#14213D" strokeWidth="2" />
+                  <rect x="10" y="-8" width="18" height="8" fill="#14213D" />
+                  <path d="M5 30 Q 19 35 33 30 L 33 60 L 5 60 Z" fill="#0E9AA7" opacity="0.7" />
+                  <text x="7" y="50" fontFamily="var(--font-mono)" fontSize="7" fill="#FFFFFF" fontWeight="bold">250mL</text>
+                </g>
 
-                  {/* Push Arrow */}
-                  <path d="M105 190 L140 190" stroke="#38bdf8" strokeWidth="2" strokeDasharray="4 2" />
-                  <circle cx="125" cy="190" r="3" fill="#22d3ee" className="animate-ping" />
+                {/* Flowing Water stream */}
+                <path
+                  d="M75 50 C 95 65 110 50 120 70"
+                  stroke="#0E9AA7"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  strokeDasharray="4 3"
+                />
 
-                  {/* Stage 2: Dual Chamber Holder (Filter + WAX in series) */}
-                  <rect x="145" y="115" width="105" height="150" rx="8" fill="#0F172A" stroke="#475569" strokeWidth="1.5" />
-                  <text x="197" y="135" fill="#f8fafc" fontSize="10" fontFamily="Space Grotesk" textAnchor="middle" fontWeight="bold">SERIES STACK</text>
+                {/* 2. Spring Syringe */}
+                <g id="hero-syringe" transform="translate(100, 60)">
+                  {/* Plunger */}
+                  <rect x="12" y="0" width="32" height="8" rx="2" fill="#FFC93C" stroke="#14213D" strokeWidth="1.5" />
+                  <rect x="25" y="8" width="6" height="24" fill="#DDD" stroke="#14213D" strokeWidth="1.5" />
+                  {/* Spring coils */}
+                  <path d="M25 14 L31 17 L25 20 L31 23 L25 26" stroke="#14213D" strokeWidth="1.5" />
+                  {/* Barrel */}
+                  <rect x="18" y="32" width="20" height="48" rx="3" fill="#CDEFF2" stroke="#14213D" strokeWidth="2" />
+                  <path d="M19 50 L37 50" stroke="#0E9AA7" strokeWidth="1" strokeDasharray="2 1" />
+                </g>
 
-                  {/* 25 mm Glass-fibre filter disc */}
-                  <rect x="155" y="145" width="85" height="35" rx="4" fill="#1e293b" stroke="#ff7a3d" strokeWidth="1.5" />
-                  <text x="197" y="162" fill="#ff7a3d" fontSize="9" fontFamily="JetBrains Mono" textAnchor="middle" fontWeight="bold">25mm GF FILTER</text>
-                  <text x="197" y="174" fill="#cbd5e1" fontSize="7.5" fontFamily="Inter" textAnchor="middle">Traps Microplastics (≥20µm)</text>
+                {/* Water Stream to Filter */}
+                <path d="M128 140 L128 155" stroke="#0E9AA7" strokeWidth="3" strokeDasharray="3 2" />
 
-                  {/* Particles trapped */}
-                  <circle cx="168" cy="162" r="2" fill="#ff7a3d" filter="url(#glowOrange)" />
-                  <circle cx="178" cy="160" r="1.5" fill="#f97316" />
-                  <circle cx="218" cy="163" r="2" fill="#ff7a3d" filter="url(#glowOrange)" />
-                  <circle cx="225" cy="159" r="1.8" fill="#f97316" />
+                {/* 3. 25 mm Glass-Fibre Filter Disc (Traps coral plastic fragments) */}
+                <g id="hero-filter" transform="translate(88, 155)">
+                  <rect x="0" y="0" width="80" height="22" rx="6" fill="#FFFFFF" stroke="#14213D" strokeWidth="2" />
+                  {/* Glass fibre mesh */}
+                  <line x1="10" y1="11" x2="70" y2="11" stroke="#14213D" strokeWidth="0.8" strokeDasharray="2 2" />
+                  {/* Trapped Coral microplastics */}
+                  <rect x="25" y="6" width="5" height="5" rx="1" fill="#FF6B4A" stroke="#14213D" strokeWidth="1" />
+                  <polygon points="45,6 49,8 47,12 43,10" fill="#FF6B4A" stroke="#14213D" strokeWidth="1" />
+                  <circle cx="58" cy="11" r="2.5" fill="#FF6B4A" />
+                  <text x="86" y="15" fontFamily="var(--font-mono)" fontSize="9" fill="#FF6B4A" fontWeight="bold">25mm Filter (MP)</text>
+                </g>
 
-                  {/* Direct connection into WAX */}
-                  <path d="M197 180 L197 195" stroke="#22d3ee" strokeWidth="2" />
+                {/* Flow to WAX Cartridge */}
+                <path d="M128 177 L128 195" stroke="#6C4AB6" strokeWidth="3" strokeDasharray="3 2" />
 
-                  {/* WAX Cartridge */}
-                  <rect x="155" y="195" width="85" height="55" rx="4" fill="#1e1b4b" stroke="#8b5cf6" strokeWidth="1.5" />
-                  <text x="197" y="215" fill="#c084fc" fontSize="9" fontFamily="JetBrains Mono" textAnchor="middle" fontWeight="bold">WAX CARTRIDGE</text>
-                  <text x="197" y="227" fill="#cbd5e1" fontSize="7.5" fontFamily="Inter" textAnchor="middle">Captures PFAS (40–60×)</text>
-                  <text x="197" y="240" fill="#a855f7" fontSize="7" fontFamily="JetBrains Mono" textAnchor="middle">Ammoniated Methanol Elute</text>
+                {/* 4. Disposable WAX Cartridge (Captures violet PFAS chains) */}
+                <g id="hero-wax" transform="translate(108, 195)">
+                  <rect x="0" y="0" width="40" height="46" rx="4" fill="#E7DEFA" stroke="#14213D" strokeWidth="2" />
+                  {/* Sorbent beads */}
+                  <circle cx="12" cy="12" r="3" fill="#6C4AB6" opacity="0.7" />
+                  <circle cx="28" cy="15" r="3" fill="#6C4AB6" opacity="0.7" />
+                  <circle cx="16" cy="30" r="3" fill="#6C4AB6" opacity="0.7" />
+                  <circle cx="28" cy="34" r="3" fill="#6C4AB6" opacity="0.7" />
+                  {/* Trapped PFAS zig-zag chains */}
+                  <path d="M8 20 L15 25 L22 20 L29 25" stroke="#6C4AB6" strokeWidth="2" strokeLinecap="round" />
+                  <text x="48" y="26" fontFamily="var(--font-mono)" fontSize="9" fill="#6C4AB6" fontWeight="bold">WAX Cartridge (PFAS)</text>
+                </g>
 
-                  {/* Captured PFAS dots */}
-                  <circle cx="168" cy="222" r="1.8" fill="#c084fc" filter="url(#glowViolet)" />
-                  <circle cx="175" cy="232" r="1.5" fill="#a855f7" />
-                  <circle cx="222" cy="220" r="2" fill="#c084fc" filter="url(#glowViolet)" />
+                {/* Two diagnostic conduits to Reader */}
+                <path d="M168 166 C 220 166 220 230 240 230" stroke="#FF6B4A" strokeWidth="2.5" strokeDasharray="3 2" />
+                <path d="M148 241 C 190 241 210 260 240 260" stroke="#6C4AB6" strokeWidth="2.5" strokeDasharray="3 2" />
 
-                  {/* Branch 1: Orange Microplastic Branch (to fluorescence optics) */}
-                  <path d="M240 162 C 280 162, 290 80, 340 80" stroke="url(#mpGrad)" strokeWidth="2.5" fill="none" strokeDasharray="3 3" />
+                {/* 5. Handheld Reader Box with OLED & LEDs */}
+                <g id="hero-reader" transform="translate(240, 180)">
+                  <rect x="0" y="0" width="220" height="150" rx="12" fill="#14213D" stroke="#0E9AA7" strokeWidth="2.5" />
                   
-                  {/* Branch 2: Violet PFAS Branch (to MIP/NIP strip) */}
-                  <path d="M240 225 C 280 225, 290 300, 340 300" stroke="url(#pfasGrad)" strokeWidth="2.5" fill="none" strokeDasharray="3 3" />
+                  {/* OLED Screen */}
+                  <rect x="12" y="14" width="145" height="110" rx="6" fill="#0B132B" stroke="#0E9AA7" strokeWidth="1.5" />
+                  <text x="20" y="32" fontFamily="var(--font-mono)" fontSize="8.5" fill="#CDEFF2" fontWeight="bold">HYDROTRACE</text>
+                  <line x1="20" y1="36" x2="145" y2="36" stroke="#0E9AA7" strokeWidth="0.8" />
+                  
+                  <text x="20" y="50" fontFamily="var(--font-mono)" fontSize="8" fill="#E7DEFA">PFAS:</text>
+                  <text x="52" y="50" fontFamily="var(--font-mono)" fontSize="8" fill="#F39C12" fontWeight="bold">DETECTED – MONITOR</text>
 
-                  {/* Optics Module Visual */}
-                  <rect x="340" y="50" width="115" height="65" rx="6" fill="#1c1917" stroke="#ff7a3d" strokeWidth="1.5" />
-                  <text x="397" y="70" fill="#ff7a3d" fontSize="9" fontFamily="JetBrains Mono" textAnchor="middle" fontWeight="bold">FLUORESCENCE</text>
-                  <text x="397" y="83" fill="#fdba74" fontSize="8" fontFamily="Inter" textAnchor="middle">470nm LED + BPW34</text>
-                  <text x="397" y="96" fill="#94a3b8" fontSize="7.5" fontFamily="JetBrains Mono" textAnchor="middle">MFI = I_stain − I_blank</text>
-                  <circle cx="355" cy="95" r="4" fill="#3b82f6" filter="url(#glowCyan)" />
-                  <circle cx="435" cy="95" r="4" fill="#ea580c" filter="url(#glowOrange)" />
+                  <text x="20" y="66" fontFamily="var(--font-mono)" fontSize="8" fill="#FFE1D6">MP:</text>
+                  <text x="42" y="66" fontFamily="var(--font-mono)" fontSize="8" fill="#2BA84A" fontWeight="bold">LOW MFI</text>
 
-                  {/* Electrochemistry Strip Visual */}
-                  <rect x="340" y="270" width="115" height="65" rx="6" fill="#1e1035" stroke="#8b5cf6" strokeWidth="1.5" />
-                  <text x="397" y="288" fill="#c084fc" fontSize="9" fontFamily="JetBrains Mono" textAnchor="middle" fontWeight="bold">MIP / NIP STRIP</text>
-                  <text x="397" y="302" fill="#e9d5ff" fontSize="8" fontFamily="Inter" textAnchor="middle">DIY Potentiostat (₹320)</text>
-                  <text x="397" y="316" fill="#a855f7" fontSize="7.5" fontFamily="JetBrains Mono" textAnchor="middle">DPV Scan · ΔI Peak Drop</text>
-                  <rect x="350" y="322" width="15" height="6" rx="1" fill="#7c3aed" />
-                  <rect x="372" y="322" width="15" height="6" rx="1" fill="#475569" />
+                  {/* Signed 12-char Code on OLED */}
+                  <rect x="18" y="76" width="132" height="24" rx="3" fill="#14213D" stroke="#FFC93C" strokeWidth="1" />
+                  <text x="23" y="92" fontFamily="var(--font-mono)" fontSize="9.5" fill="#FFC93C" fontWeight="bold" letterSpacing="0.05em">
+                    7H4K-9M2X-8B3Q
+                  </text>
+                  <text x="20" y="114" fontFamily="var(--font-mono)" fontSize="7" fill="#A0AEC0">SMS CODE SIGNED</text>
 
-                  {/* Convergence into Handheld Reader */}
-                  <path d="M455 80 C 475 80, 480 160, 495 180" stroke="#ff7a3d" strokeWidth="1.5" />
-                  <path d="M455 300 C 475 300, 480 200, 495 190" stroke="#8b5cf6" strokeWidth="1.5" />
+                  {/* Traffic LEDs */}
+                  <circle cx="182" cy="38" r="8" fill="#194d27" stroke="#0E9AA7" strokeWidth="1" />
+                  <circle cx="182" cy="64" r="8" fill="#F39C12" stroke="#0E9AA7" strokeWidth="1" /> {/* Active Amber */}
+                  <circle cx="182" cy="64" r="11" fill="#F39C12" opacity="0.3" />
+                  <circle cx="182" cy="90" r="8" fill="#4d121b" stroke="#0E9AA7" strokeWidth="1" />
+                </g>
 
-                  {/* Handheld Reader */}
-                  <rect x="495" y="130" width="90" height="135" rx="8" fill="#0A1628" stroke="#38bdf8" strokeWidth="2" filter="url(#glowCyan)" />
-                  <text x="540" y="148" fill="#38bdf8" fontSize="9" fontFamily="Space Grotesk" textAnchor="middle" fontWeight="bold">JAL-DRISHTI</text>
-                  <text x="540" y="159" fill="#94a3b8" fontSize="7" fontFamily="JetBrains Mono" textAnchor="middle">₹2,700 READER</text>
+                {/* 6. Keypad Phone with SMS Bubble */}
+                <g id="hero-phone" transform="translate(60, 310)">
+                  {/* Mini feature phone */}
+                  <rect x="0" y="0" width="70" height="95" rx="8" fill="#14213D" stroke="#0E9AA7" strokeWidth="2" />
+                  <rect x="8" y="8" width="54" height="35" rx="3" fill="#FFF2C6" />
+                  <text x="14" y="24" fontFamily="var(--font-mono)" fontSize="6" fill="#14213D" fontWeight="bold">SMS SENT</text>
+                  <text x="14" y="34" fontFamily="var(--font-mono)" fontSize="5.5" fill="#0E9AA7">WQMIS 1902</text>
+                  {/* Buttons */}
+                  <rect x="14" y="50" width="10" height="6" fill="#25355A" rx="1" />
+                  <rect x="30" y="50" width="10" height="6" fill="#25355A" rx="1" />
+                  <rect x="46" y="50" width="10" height="6" fill="#25355A" rx="1" />
+                  <rect x="14" y="60" width="10" height="6" fill="#25355A" rx="1" />
+                  <rect x="30" y="60" width="10" height="6" fill="#25355A" rx="1" />
+                  <rect x="46" y="60" width="10" height="6" fill="#25355A" rx="1" />
+                </g>
 
-                  {/* OLED Screen on reader */}
-                  <rect x="507" y="167" width="66" height="38" rx="3" fill="#000000" stroke="#334155" />
-                  <text x="512" y="180" fill="#22d3ee" fontSize="6.5" fontFamily="JetBrains Mono">PFAS: AMBER</text>
-                  <text x="512" y="191" fill="#22c55e" fontSize="6.5" fontFamily="JetBrains Mono">MP:   LOW MFI</text>
-                  <text x="512" y="201" fill="#38bdf8" fontSize="6" fontFamily="JetBrains Mono">7H4K-9M2X</text>
+                {/* Flying SMS Bubble */}
+                <g transform="translate(145, 340)">
+                  <path d="M0 0 L 15 -10 L 80 -10 Q 86 -10 86 -4 L 86 16 Q 86 22 80 22 L 15 22 Q 9 22 9 16 L 9 8 Z" fill="#FFC93C" stroke="#14213D" strokeWidth="1.5" />
+                  <text x="18" y="10" fontFamily="var(--font-mono)" fontSize="7.5" fill="#14213D" fontWeight="bold">
+                    7H4K-9M2X-8B3Q
+                  </text>
+                </g>
+              </svg>
 
-                  {/* 3 Traffic LEDs */}
-                  <circle cx="522" cy="216" r="3" fill="#22c55e" opacity="0.3" />
-                  <circle cx="540" cy="216" r="3" fill="#f59e0b" filter="url(#glowOrange)" />
-                  <circle cx="558" cy="216" r="3" fill="#ef4444" opacity="0.3" />
-
-                  {/* ESP32-S3 microcontroller label */}
-                  <text x="540" y="235" fill="#64748b" fontSize="6" fontFamily="JetBrains Mono" textAnchor="middle">ESP32-S3 / OLED</text>
-                  <text x="540" y="246" fill="#38bdf8" fontSize="6" fontFamily="JetBrains Mono" textAnchor="middle">HMAC SIGNED</text>
-                </svg>
-
-                {/* Flow animation banner */}
-                <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between px-3 py-1.5 rounded bg-slate-900/90 border border-slate-700/80 text-[10px] font-mono text-slate-300">
-                  <span className="text-cyan-400 font-bold">1 SAMPLE</span>
-                  <span>→</span>
-                  <span className="text-orange-400">FILTER (MP)</span>
-                  <span>+</span>
-                  <span className="text-purple-400">WAX (PFAS)</span>
-                  <span>→</span>
-                  <span className="text-emerald-400">SIGN & SMS</span>
-                </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px dashed rgba(20, 33, 61, 0.2)' }}>
+                <SimulatedTag text="Simulated demonstration result" />
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--color-ink)', opacity: 0.7 }}>
+                  1 Sample ➔ 2 Tests ➔ 1 Signed Code
+                </span>
               </div>
-
-              {/* Dynamic Live Result Simulated Panel */}
-              <div className="mt-4 p-4 rounded-lg bg-[#020611] border border-cyan-500/20 space-y-3">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                  <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                    <span className="font-mono text-xs font-bold text-white tracking-wider">
-                      ACTIVE SCREENING TELEMETRY
-                    </span>
-                  </div>
-                  <SimulatedBadge text="SIMULATED DEMO" />
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 text-xs font-mono">
-                  <div className="p-2.5 rounded bg-slate-900/60 border border-amber-500/30">
-                    <div className="text-[10px] text-slate-400 uppercase">PFAS Triage Band</div>
-                    <div className="text-amber-400 font-bold text-sm flex items-center gap-1.5 mt-0.5">
-                      <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-                      DETECTED – MONITOR
-                    </div>
-                  </div>
-
-                  <div className="p-2.5 rounded bg-slate-900/60 border border-emerald-500/30">
-                    <div className="text-[10px] text-slate-400 uppercase">Microplastic Index</div>
-                    <div className="text-emerald-400 font-bold text-sm flex items-center gap-1.5 mt-0.5">
-                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                      LOW MFI (BAND 1)
-                    </div>
-                  </div>
-                </div>
-
-                {/* 12-char Crockford Base32 Code Readout */}
-                <div className="p-3 rounded bg-cyan-950/30 border border-cyan-500/30 flex flex-wrap items-center justify-between gap-2">
-                  <div>
-                    <div className="text-[10px] font-mono text-slate-400 uppercase">
-                      Signed SMS Code (Crockford Base32)
-                    </div>
-                    <div className="font-mono text-cyan-300 font-bold text-base tracking-wider mt-0.5">
-                      7H4K-9M2X-8B3Q
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 text-right">
-                    <div className="text-[11px] font-mono text-emerald-400 font-semibold bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded">
-                      SIGNATURE: VALID ✓
-                    </div>
-                    <div className="text-[11px] font-mono text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-700">
-                      CTR #0417
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-[10px] text-slate-500 font-mono text-center">
-                  *Illustrative simulated demonstration data. Lab confirmation required for flagged sources.
-                </div>
-              </div>
-            </GlassPanel>
-
+            </div>
           </div>
 
         </div>
       </div>
+
+      <style>{`
+        @media (min-width: 992px) {
+          .hero-grid {
+            grid-template-columns: 1.15fr 0.85fr !important;
+          }
+        }
+        @media (max-width: 991px) {
+          .hero-teal-blob {
+            display: none !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }
