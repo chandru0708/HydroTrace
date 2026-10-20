@@ -120,19 +120,6 @@ export default function Hero() {
 
           {/* Right Column (45%): Custom Flat Illustration */}
           <div style={{ position: 'relative' }}>
-            {/* Margin Notes with hand-drawn arrows */}
-            <div style={{ position: 'absolute', top: '-15px', right: '20px', zIndex: 10 }}>
-              <MarginNote text="plastics stop here!" direction="curve-down" color="#FFFFFF" />
-            </div>
-            
-            <div style={{ position: 'absolute', bottom: '85px', left: '-20px', zIndex: 10 }}>
-              <MarginNote text="PFAS sticks here" direction="right" color="var(--color-ink)" />
-            </div>
-
-            <div style={{ position: 'absolute', bottom: '-20px', right: '30px', zIndex: 10 }}>
-              <MarginNote text="tamper-proof signed code!" direction="left" color="#FFFFFF" />
-            </div>
-
             {/* Main Hero Illustrated Scene (SVG) */}
             <div
               style={{
@@ -141,131 +128,176 @@ export default function Hero() {
                 border: '3px solid var(--color-ink)',
                 boxShadow: '6px 6px 0px var(--color-ink)',
                 padding: '1.25rem',
-                overflow: 'hidden'
+                position: 'relative'
               }}
             >
-              <svg viewBox="0 0 480 430" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: 'auto', display: 'block' }}>
+              <svg viewBox="0 0 520 440" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: 'auto', display: 'block' }}>
                 {/* 1. Sample Bottle Tipping (Water flows into Syringe) */}
-                <g id="sample-bottle" transform="translate(30, 20) rotate(25)">
-                  <rect x="0" y="0" width="38" height="65" rx="5" fill="#CDEFF2" stroke="#14213D" strokeWidth="2" />
-                  <rect x="10" y="-8" width="18" height="8" fill="#14213D" />
-                  <path d="M5 30 Q 19 35 33 30 L 33 60 L 5 60 Z" fill="#0E9AA7" opacity="0.7" />
-                  <text x="7" y="50" fontFamily="var(--font-mono)" fontSize="7" fill="#FFFFFF" fontWeight="bold">250mL</text>
+                <g id="sample-bottle" transform="translate(18, 15) rotate(22)">
+                  <rect x="0" y="0" width="36" height="60" rx="5" fill="#CDEFF2" stroke="#14213D" strokeWidth="2" />
+                  <rect x="9" y="-7" width="18" height="7" fill="#14213D" />
+                  <path d="M4 28 Q 18 33 32 28 L 32 55 L 4 55 Z" fill="#0E9AA7" opacity="0.75" />
+                  <text x="6" y="46" fontFamily="var(--font-mono)" fontSize="7.5" fill="#FFFFFF" fontWeight="bold">250mL</text>
                 </g>
 
-                {/* Flowing Water stream */}
+                {/* Flowing Water stream into Syringe */}
                 <path
-                  d="M75 50 C 95 65 110 50 120 70"
+                  d="M62 45 C 78 55 85 45 95 60"
                   stroke="#0E9AA7"
-                  strokeWidth="4"
+                  strokeWidth="3.5"
                   strokeLinecap="round"
                   strokeDasharray="4 3"
                 />
 
                 {/* 2. Spring Syringe */}
-                <g id="hero-syringe" transform="translate(100, 60)">
-                  {/* Plunger */}
-                  <rect x="12" y="0" width="32" height="8" rx="2" fill="#FFC93C" stroke="#14213D" strokeWidth="1.5" />
-                  <rect x="25" y="8" width="6" height="24" fill="#DDD" stroke="#14213D" strokeWidth="1.5" />
-                  {/* Spring coils */}
-                  <path d="M25 14 L31 17 L25 20 L31 23 L25 26" stroke="#14213D" strokeWidth="1.5" />
+                <g id="hero-syringe" transform="translate(80, 50)">
+                  {/* Plunger Handle */}
+                  <rect x="6" y="0" width="32" height="7" rx="2" fill="#FFC93C" stroke="#14213D" strokeWidth="1.5" />
+                  <rect x="19" y="7" width="6" height="22" fill="#DDD" stroke="#14213D" strokeWidth="1.5" />
+                  {/* Internal Spring */}
+                  <path d="M19 12 L25 15 L19 18 L25 21 L19 24" stroke="#14213D" strokeWidth="1.5" />
                   {/* Barrel */}
-                  <rect x="18" y="32" width="20" height="48" rx="3" fill="#CDEFF2" stroke="#14213D" strokeWidth="2" />
-                  <path d="M19 50 L37 50" stroke="#0E9AA7" strokeWidth="1" strokeDasharray="2 1" />
+                  <rect x="12" y="29" width="20" height="45" rx="3" fill="#CDEFF2" stroke="#14213D" strokeWidth="2" />
+                  <path d="M13 46 L31 46" stroke="#0E9AA7" strokeWidth="1" strokeDasharray="2 1" />
                 </g>
 
-                {/* Water Stream to Filter */}
-                <path d="M128 140 L128 155" stroke="#0E9AA7" strokeWidth="3" strokeDasharray="3 2" />
+                {/* Vertical Stream to Filter */}
+                <path d="M102 125 L102 140" stroke="#0E9AA7" strokeWidth="3" strokeDasharray="3 2" />
 
                 {/* 3. 25 mm Glass-Fibre Filter Disc (Traps coral plastic fragments) */}
-                <g id="hero-filter" transform="translate(88, 155)">
-                  <rect x="0" y="0" width="80" height="22" rx="6" fill="#FFFFFF" stroke="#14213D" strokeWidth="2" />
-                  {/* Glass fibre mesh */}
-                  <line x1="10" y1="11" x2="70" y2="11" stroke="#14213D" strokeWidth="0.8" strokeDasharray="2 2" />
+                <g id="hero-filter">
+                  {/* Filter Disc Housing */}
+                  <rect x="66" y="140" width="72" height="20" rx="5" fill="#FFFFFF" stroke="#14213D" strokeWidth="2" />
+                  <line x1="74" y1="150" x2="130" y2="150" stroke="#14213D" strokeWidth="0.8" strokeDasharray="2 2" />
                   {/* Trapped Coral microplastics */}
-                  <rect x="25" y="6" width="5" height="5" rx="1" fill="#FF6B4A" stroke="#14213D" strokeWidth="1" />
-                  <polygon points="45,6 49,8 47,12 43,10" fill="#FF6B4A" stroke="#14213D" strokeWidth="1" />
-                  <circle cx="58" cy="11" r="2.5" fill="#FF6B4A" />
-                  <text x="86" y="15" fontFamily="var(--font-mono)" fontSize="9" fill="#FF6B4A" fontWeight="bold">25mm Filter (MP)</text>
+                  <rect x="80" y="145" width="4" height="4" rx="1" fill="#FF6B4A" stroke="#14213D" strokeWidth="1" />
+                  <polygon points="98,145 102,147 100,151 96,149" fill="#FF6B4A" stroke="#14213D" strokeWidth="1" />
+                  <circle cx="114" cy="150" r="2.5" fill="#FF6B4A" />
+
+                  {/* Centered Label below filter */}
+                  <text x="102" y="172" fontFamily="var(--font-mono)" fontSize="8" fill="#FF6B4A" fontWeight="bold" textAnchor="middle">
+                    25mm GF Filter
+                  </text>
+
+                  {/* Handwritten Annotation inside SVG */}
+                  <text x="185" y="105" fontFamily="var(--font-hand)" fontSize="16" fill="var(--color-nile-coral)" fontWeight="bold">
+                    plastics stop here!
+                  </text>
+                  <path d="M185 110 C 160 115 150 135 142 144" stroke="var(--color-nile-coral)" strokeWidth="1.8" fill="none" />
+                  <polygon points="142,144 149,139 146,147" fill="var(--color-nile-coral)" />
                 </g>
 
                 {/* Flow to WAX Cartridge */}
-                <path d="M128 177 L128 195" stroke="#6C4AB6" strokeWidth="3" strokeDasharray="3 2" />
+                <path d="M102 176 L102 192" stroke="#6C4AB6" strokeWidth="3" strokeDasharray="3 2" />
 
                 {/* 4. Disposable WAX Cartridge (Captures violet PFAS chains) */}
-                <g id="hero-wax" transform="translate(108, 195)">
-                  <rect x="0" y="0" width="40" height="46" rx="4" fill="#E7DEFA" stroke="#14213D" strokeWidth="2" />
+                <g id="hero-wax">
+                  <rect x="84" y="192" width="36" height="42" rx="4" fill="#E7DEFA" stroke="#14213D" strokeWidth="2" />
                   {/* Sorbent beads */}
-                  <circle cx="12" cy="12" r="3" fill="#6C4AB6" opacity="0.7" />
-                  <circle cx="28" cy="15" r="3" fill="#6C4AB6" opacity="0.7" />
-                  <circle cx="16" cy="30" r="3" fill="#6C4AB6" opacity="0.7" />
-                  <circle cx="28" cy="34" r="3" fill="#6C4AB6" opacity="0.7" />
+                  <circle cx="94" cy="202" r="2.5" fill="#6C4AB6" opacity="0.7" />
+                  <circle cx="108" cy="205" r="2.5" fill="#6C4AB6" opacity="0.7" />
+                  <circle cx="96" cy="220" r="2.5" fill="#6C4AB6" opacity="0.7" />
+                  <circle cx="108" cy="224" r="2.5" fill="#6C4AB6" opacity="0.7" />
                   {/* Trapped PFAS zig-zag chains */}
-                  <path d="M8 20 L15 25 L22 20 L29 25" stroke="#6C4AB6" strokeWidth="2" strokeLinecap="round" />
-                  <text x="48" y="26" fontFamily="var(--font-mono)" fontSize="9" fill="#6C4AB6" fontWeight="bold">WAX Cartridge (PFAS)</text>
+                  <path d="M90 212 L96 217 L102 212 L108 217" stroke="#6C4AB6" strokeWidth="2" strokeLinecap="round" />
+
+                  {/* Centered Label below WAX */}
+                  <text x="102" y="246" fontFamily="var(--font-mono)" fontSize="8" fill="#6C4AB6" fontWeight="bold" textAnchor="middle">
+                    WAX Cartridge
+                  </text>
+
+                  {/* Handwritten Annotation safely below */}
+                  <text x="102" y="262" fontFamily="var(--font-hand)" fontSize="15" fill="var(--color-pfas-violet)" fontWeight="bold" textAnchor="middle">
+                    PFAS sticks here!
+                  </text>
                 </g>
 
                 {/* Two diagnostic conduits to Reader */}
-                <path d="M168 166 C 220 166 220 230 240 230" stroke="#FF6B4A" strokeWidth="2.5" strokeDasharray="3 2" />
-                <path d="M148 241 C 190 241 210 260 240 260" stroke="#6C4AB6" strokeWidth="2.5" strokeDasharray="3 2" />
+                <path d="M138 150 C 190 150 205 170 245 170" stroke="#FF6B4A" strokeWidth="2.5" strokeDasharray="3 2" />
+                <path d="M120 200 C 170 200 195 210 245 210" stroke="#6C4AB6" strokeWidth="2.5" strokeDasharray="3 2" />
 
                 {/* 5. Handheld Reader Box with OLED & LEDs */}
-                <g id="hero-reader" transform="translate(240, 180)">
-                  <rect x="0" y="0" width="220" height="150" rx="12" fill="#14213D" stroke="#0E9AA7" strokeWidth="2.5" />
+                <g id="hero-reader" transform="translate(245, 120)">
+                  <rect x="0" y="0" width="255" height="175" rx="14" fill="#14213D" stroke="#0E9AA7" strokeWidth="2.5" />
                   
                   {/* OLED Screen */}
-                  <rect x="12" y="14" width="145" height="110" rx="6" fill="#0B132B" stroke="#0E9AA7" strokeWidth="1.5" />
-                  <text x="20" y="32" fontFamily="var(--font-mono)" fontSize="8.5" fill="#CDEFF2" fontWeight="bold">HYDROTRACE</text>
-                  <line x1="20" y1="36" x2="145" y2="36" stroke="#0E9AA7" strokeWidth="0.8" />
+                  <rect x="14" y="16" width="170" height="135" rx="7" fill="#0B132B" stroke="#0E9AA7" strokeWidth="1.5" />
+                  <text x="24" y="36" fontFamily="var(--font-mono)" fontSize="9" fill="#CDEFF2" fontWeight="bold">HYDROTRACE v1.2</text>
+                  <line x1="24" y1="42" x2="174" y2="42" stroke="#0E9AA7" strokeWidth="0.8" />
                   
-                  <text x="20" y="50" fontFamily="var(--font-mono)" fontSize="8" fill="#E7DEFA">PFAS:</text>
-                  <text x="52" y="50" fontFamily="var(--font-mono)" fontSize="8" fill="#F39C12" fontWeight="bold">DETECTED – MONITOR</text>
+                  <text x="24" y="60" fontFamily="var(--font-mono)" fontSize="8.5" fill="#E7DEFA">PFAS:</text>
+                  <text x="60" y="60" fontFamily="var(--font-mono)" fontSize="8.5" fill="#F39C12" fontWeight="bold">DETECTED – MONITOR</text>
 
-                  <text x="20" y="66" fontFamily="var(--font-mono)" fontSize="8" fill="#FFE1D6">MP:</text>
-                  <text x="42" y="66" fontFamily="var(--font-mono)" fontSize="8" fill="#2BA84A" fontWeight="bold">LOW MFI</text>
+                  <text x="24" y="80" fontFamily="var(--font-mono)" fontSize="8.5" fill="#FFE1D6">MP:</text>
+                  <text x="48" y="80" fontFamily="var(--font-mono)" fontSize="8.5" fill="#2BA84A" fontWeight="bold">LOW MFI</text>
 
                   {/* Signed 12-char Code on OLED */}
-                  <rect x="18" y="76" width="132" height="24" rx="3" fill="#14213D" stroke="#FFC93C" strokeWidth="1" />
-                  <text x="23" y="92" fontFamily="var(--font-mono)" fontSize="9.5" fill="#FFC93C" fontWeight="bold" letterSpacing="0.05em">
+                  <rect x="22" y="94" width="154" height="28" rx="4" fill="#14213D" stroke="#FFC93C" strokeWidth="1.2" />
+                  <text x="28" y="113" fontFamily="var(--font-mono)" fontSize="11" fill="#FFC93C" fontWeight="bold" letterSpacing="0.06em">
                     7H4K-9M2X-8B3Q
                   </text>
-                  <text x="20" y="114" fontFamily="var(--font-mono)" fontSize="7" fill="#A0AEC0">SMS CODE SIGNED</text>
+                  <text x="24" y="140" fontFamily="var(--font-mono)" fontSize="7.5" fill="#A0AEC0">SMS CODE SIGNED</text>
 
                   {/* Traffic LEDs */}
-                  <circle cx="182" cy="38" r="8" fill="#194d27" stroke="#0E9AA7" strokeWidth="1" />
-                  <circle cx="182" cy="64" r="8" fill="#F39C12" stroke="#0E9AA7" strokeWidth="1" /> {/* Active Amber */}
-                  <circle cx="182" cy="64" r="11" fill="#F39C12" opacity="0.3" />
-                  <circle cx="182" cy="90" r="8" fill="#4d121b" stroke="#0E9AA7" strokeWidth="1" />
+                  <g transform="translate(205, 30)">
+                    <rect x="0" y="0" width="34" height="105" rx="6" fill="#0B132B" stroke="#0E9AA7" strokeWidth="1" />
+                    <circle cx="17" cy="20" r="9" fill="#194d27" stroke="#0E9AA7" strokeWidth="1" />
+                    <circle cx="17" cy="52" r="9" fill="#F39C12" stroke="#0E9AA7" strokeWidth="1" />
+                    <circle cx="17" cy="52" r="13" fill="#F39C12" opacity="0.35" />
+                    <circle cx="17" cy="84" r="9" fill="#4d121b" stroke="#0E9AA7" strokeWidth="1" />
+                  </g>
                 </g>
 
                 {/* 6. Keypad Phone with SMS Bubble */}
-                <g id="hero-phone" transform="translate(60, 310)">
+                <g id="hero-phone" transform="translate(45, 275)">
                   {/* Mini feature phone */}
-                  <rect x="0" y="0" width="70" height="95" rx="8" fill="#14213D" stroke="#0E9AA7" strokeWidth="2" />
-                  <rect x="8" y="8" width="54" height="35" rx="3" fill="#FFF2C6" />
-                  <text x="14" y="24" fontFamily="var(--font-mono)" fontSize="6" fill="#14213D" fontWeight="bold">SMS SENT</text>
-                  <text x="14" y="34" fontFamily="var(--font-mono)" fontSize="5.5" fill="#0E9AA7">WQMIS 1902</text>
+                  <rect x="0" y="0" width="80" height="115" rx="10" fill="#14213D" stroke="#0E9AA7" strokeWidth="2" />
+                  <rect x="9" y="9" width="62" height="42" rx="4" fill="#FFF2C6" />
+                  <text x="14" y="26" fontFamily="var(--font-mono)" fontSize="7" fill="#14213D" fontWeight="bold">SMS SENT</text>
+                  <text x="14" y="38" fontFamily="var(--font-mono)" fontSize="6.5" fill="#0E9AA7">WQMIS: 1902</text>
                   {/* Buttons */}
-                  <rect x="14" y="50" width="10" height="6" fill="#25355A" rx="1" />
-                  <rect x="30" y="50" width="10" height="6" fill="#25355A" rx="1" />
-                  <rect x="46" y="50" width="10" height="6" fill="#25355A" rx="1" />
-                  <rect x="14" y="60" width="10" height="6" fill="#25355A" rx="1" />
-                  <rect x="30" y="60" width="10" height="6" fill="#25355A" rx="1" />
-                  <rect x="46" y="60" width="10" height="6" fill="#25355A" rx="1" />
+                  <rect x="15" y="60" width="12" height="7" fill="#25355A" rx="1" />
+                  <rect x="34" y="60" width="12" height="7" fill="#25355A" rx="1" />
+                  <rect x="53" y="60" width="12" height="7" fill="#25355A" rx="1" />
+                  <rect x="15" y="74" width="12" height="7" fill="#25355A" rx="1" />
+                  <rect x="34" y="74" width="12" height="7" fill="#25355A" rx="1" />
+                  <rect x="53" y="74" width="12" height="7" fill="#25355A" rx="1" />
+                  <rect x="15" y="88" width="12" height="7" fill="#25355A" rx="1" />
+                  <rect x="34" y="88" width="12" height="7" fill="#25355A" rx="1" />
+                  <rect x="53" y="88" width="12" height="7" fill="#25355A" rx="1" />
                 </g>
 
                 {/* Flying SMS Bubble */}
-                <g transform="translate(145, 340)">
-                  <path d="M0 0 L 15 -10 L 80 -10 Q 86 -10 86 -4 L 86 16 Q 86 22 80 22 L 15 22 Q 9 22 9 16 L 9 8 Z" fill="#FFC93C" stroke="#14213D" strokeWidth="1.5" />
-                  <text x="18" y="10" fontFamily="var(--font-mono)" fontSize="7.5" fill="#14213D" fontWeight="bold">
+                <g transform="translate(145, 300)">
+                  <path d="M0 0 L 18 -12 L 140 -12 Q 146 -12 146 -6 L 146 22 Q 146 28 140 28 L 18 28 Q 12 28 12 22 L 12 8 Z" fill="#FFC93C" stroke="#14213D" strokeWidth="1.5" />
+                  <text x="24" y="12" fontFamily="var(--font-mono)" fontSize="9" fill="#14213D" fontWeight="bold">
                     7H4K-9M2X-8B3Q
                   </text>
                 </g>
+
+                {/* Handwritten Annotation for Signed Code */}
+                <text x="315" y="355" fontFamily="var(--font-hand)" fontSize="17" fill="var(--color-ink)" fontWeight="bold">
+                  tamper-proof signed code!
+                </text>
+                <path d="M310 350 C 275 345 250 330 225 320" stroke="var(--color-ink)" strokeWidth="1.8" fill="none" />
+                <polygon points="225,320 234,321 230,327" fill="var(--color-ink)" />
               </svg>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px dashed rgba(20, 33, 61, 0.2)' }}>
+              {/* Bottom Metadata Bar - Generous Spacing and Wrap Safety */}
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginTop: '0.85rem',
+                  paddingTop: '0.65rem',
+                  borderTop: '1px dashed rgba(20, 33, 61, 0.2)',
+                  gap: '0.75rem',
+                  flexWrap: 'wrap'
+                }}
+              >
                 <SimulatedTag text="Simulated demonstration result" />
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--color-ink)', opacity: 0.7 }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--color-ink)', opacity: 0.85, fontWeight: 700 }}>
                   1 Sample ➔ 2 Tests ➔ 1 Signed Code
                 </span>
               </div>

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import Lenis from 'lenis';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import ProblemSection from './components/ProblemSection';
@@ -24,6 +25,30 @@ import References from './components/References';
 import Footer from './components/Footer';
 
 export default function App() {
+  useEffect(() => {
+    // 60Hz / 120Hz smooth refresh rate momentum scrolling
+    const lenis = new Lenis({
+      duration: 1.15,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      wheelMultiplier: 1.05,
+      touchMultiplier: 1.5,
+    });
+
+    let animationFrameId;
+    function raf(time) {
+      lenis.raf(time);
+      animationFrameId = requestAnimationFrame(raf);
+    }
+
+    animationFrameId = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      lenis.destroy();
+    };
+  }, []);
+
   return (
     <div className="hydrotrace-app">
       {/* Editorial Top Navigation */}
