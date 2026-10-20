@@ -42,7 +42,7 @@ export default function Hero() {
                 SIH 2026 · PS 26252 · Ministry of Jal Shakti
               </Sticker>
               <Sticker rotate="2deg" color="var(--color-sky)" textColor="var(--color-ink)">
-                Clean & Green Tech
+                Team: AbyssX 786 · ID: 195737
               </Sticker>
             </div>
 

@@ -2,6 +2,7 @@
 > *"Trace the invisible. Test every source."*
 
 **Smart India Hackathon 2026 · Problem Statement PS 26252**  
+**Team:** AbyssX 786 · **Team ID:** 195737  
 **Category:** Hardware · **Theme:** Clean & Green Technology  
 **Organization:** Ministry of Jal Shakti (MoJS) — National Jal Jeevan Mission (NJJM), Department of Drinking Water & Sanitation (DDWS)
 

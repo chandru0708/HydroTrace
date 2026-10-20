@@ -32,6 +32,9 @@ export default function FinalVision() {
           <Sticker rotate="-1deg" color="var(--color-sky)" textColor="var(--color-ink)">
             Ministry of Jal Shakti · NJJM · DDWS
           </Sticker>
+          <Sticker rotate="2deg" color="var(--color-butter)" textColor="var(--color-ink)">
+            Team AbyssX 786 · 195737
+          </Sticker>
         </div>
 
         {/* Huge Fraunces Headline */}

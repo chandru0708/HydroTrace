@@ -61,11 +61,11 @@ export default function Footer() {
               <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--color-signal-yellow)', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
                 COMPETITION SUBMISSION DETAILS
               </div>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.95rem', color: '#FFFFFF', fontWeight: 700 }}>
-                Team: [TEAM NAME]
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.05rem', color: '#FFFFFF', fontWeight: 800 }}>
+                Team: AbyssX 786
               </div>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: '#A0AEC0', marginTop: '0.2rem' }}>
-                Team ID: [TEAM ID]
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', color: 'var(--color-signal-yellow)', fontWeight: 700, marginTop: '0.2rem' }}>
+                Team ID: 195737
               </div>
               <div style={{ fontSize: '0.82rem', color: '#CDEFF2', marginTop: '0.85rem', lineHeight: 1.5 }}>
                 Field hardware prototype designed for testing rural drinking water supplies under the National Jal Jeevan Mission.
